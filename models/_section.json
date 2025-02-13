@@ -20,12 +20,6 @@
       "id": "section",
       "fields": [
         {
-          "component": "text",
-          "name": "name",
-          "label": "Section Name",
-          "description": "The label shown for this section in the Content Tree"
-        },
-        {
           "component": "multiselect",
           "name": "style",
           "label": "Style",
@@ -35,8 +29,12 @@
               "value": "highlight"
             },
             {
-              "name": "Home",
-              "value": "home"
+              "name": "Flex",
+              "value": "flex"
+            },
+            {
+              "name": "Registration",
+              "value": "registration"
             }
           ]
         }
@@ -60,6 +58,9 @@
         "featurearticles",
         "map",
         "offer",
+        "simple-form",
+        "form",
+        "form-embed",
         "forex"       
       ]
     }

@@ -1,16 +1,17 @@
 /* eslint-disable no-unused-expressions */
+import { createOptimizedPicture } from '../../scripts/aem.js';
 import authenticate from '../../scripts/auth.js';
 import { moveInstrumentation } from '../../scripts/scripts.js';
 import { decorateNavAuth } from '../header/header.js';
 
 function decorateAuthenticatedState(parent, user) {
   const USER_INFO = `<div class="dashboard-mini">
-      <span class="dashboard-mini-welcome">Welcome back ${user.firstName}!</span>
-      <div class="dashboard-mini-account-balance">
-        <span class="dashboard-mini-account-balance-heading">Account Balance</span>
-        <p class="dashboard-mini-account-balance-value">$1,920.00</p>
+      <span class="dashboard-mini__welcome">Welcome back ${user.firstName}!</span>
+      <div class="dashboard-mini__account-balance">
+        <span class="dashboard-mini__account-balance-heading">Account Balance</span>
+        <p class="dashboard-mini__account-balance-value">$1,920.00</p>
       </div>
-      <div class=dashboard-mini-quick-actions>
+      <div class=dashboard-mini__quick-actions>
         <span><a href="https://securbank-react.vercel.app/" target="_blank">View account information</a></span>
       </div>
     </div>
@@ -25,7 +26,7 @@ function decorateUnAuthenticatedState(parent) {
   const FORM = `<form class="login-form">
       <div id="login-message" class="login-form-message">
         <span>Welcome back!</span>
-        <p class="error-message" style="display:block"></p>
+        <p class="error_message" style="display:none"></p>
       </div>
       <div class="login-form-input">
         <div class="login-form-label">
@@ -49,7 +50,7 @@ function decorateUnAuthenticatedState(parent) {
         </div>
       </div>
       <div class="login-form-forgot-password">
-        <span>Forgot user ID or password?</span>
+        <span>New to SecurBank? <a href="/account-registration">Register for an account<a/></span>
       </div>
     </form>`;
 
@@ -66,11 +67,11 @@ function decorateUnAuthenticatedState(parent) {
     authenticate(username, password).then((user) => {
       // console.log(user);
       if (user === null) {
-        const errorMessage = document.getElementsByClassName('error-message')[0];
+        const errorMessage = document.getElementsByClassName('error_message')[0];
         errorMessage.style.display = 'block';
         errorMessage.textContent = 'Authentication failed.';
       } else {
-        const errorMessage = document.getElementsByClassName('error-message')[0];
+        const errorMessage = document.getElementsByClassName('error_message')[0];
         errorMessage.style.display = 'none';
         errorMessage.textContent = '';
         document.getElementById('log-in').remove();
@@ -85,8 +86,11 @@ function decorateUnAuthenticatedState(parent) {
 
 export default async function decorate(block) {
   let row = block.firstElementChild;
-  const bg = row.querySelector('picture');
-  block.append(bg);
+  const bg = row.querySelector('a');
+  const imageSrc = bg.href;
+  const optimisedImg = createOptimizedPicture(imageSrc, '', false, [{ width: '1200' }], true, 'HeroImage');
+  console.log(imageSrc);
+  block.append(optimisedImg);
   row.remove();
   const bgP = block.closest('p');
   if (bgP) bgP.remove();

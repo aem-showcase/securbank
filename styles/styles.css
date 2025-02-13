@@ -243,6 +243,72 @@ main .section.highlight {
   background-color: var(--highlight-background-color);
 }
 
+main .section.flex {
+  display: flex;
+  max-width: 1280px;
+  gap: 10px;
+}
+
+main .section.thirds > :first-child {
+  flex-basis: 33.33%; 
+  margin: 0;
+}
+
+main .section.thirds > div {
+  flex-basis: 66%; 
+  margin: 0;
+}
+
+main .section.registration {
+  background-image: url(/icons/visual.svg);
+  background-repeat: no-repeat;
+  background-size: contain;
+  max-width: 1280px;
+  display: flex;
+  flex-direction: column;
+  padding-left: 200px;
+  align-items: flex-start;
+  margin: 50px auto 50px auto;
+}
+
+main .section.registration > .default-content-wrapper {
+  width: 500px;
+  background-color: white;
+  padding-left: 200px;
+  padding-top: 100px;
+}
+
+main .section.registration > .form-wrapper {
+  width: 500px;
+    padding-left: 200px;
+    background-color: white;
+    padding-bottom: 100px;
+}
+
+@media (width <= 900px) {
+  main .section.registration {
+    background-image: none;
+    max-width: 1280px;
+    display: flex;
+    flex-direction: column;
+    padding-left: 0px;
+    align-items: flex-start;
+    margin: 50px auto 50px auto;
+  }
+  
+  main .section.registration > .default-content-wrapper {
+    margin: 0 auto 0 auto;
+    width: 100%;
+    padding-left: 0px;
+    padding-top: 0px;
+  }
+  
+  main .section.registration > .form-wrapper {
+    width: 100%;
+    padding-left: 0px;
+  }
+}
+
 .section h2 {
   text-align: center;
   font-size: 36px;

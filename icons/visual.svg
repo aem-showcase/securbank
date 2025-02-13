@@ -1,0 +1,92 @@
+<svg id="Visual" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="685" height="1200" viewBox="0 0 685 1200">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #0296a6;
+      }
+
+      .cls-2 {
+        fill: #3e6470;
+      }
+
+      .cls-3 {
+        clip-path: url(#clip-path);
+      }
+
+      .cls-14, .cls-4 {
+        opacity: 0.2;
+      }
+
+      .cls-10, .cls-15, .cls-4, .cls-7 {
+        mix-blend-mode: overlay;
+        isolation: isolate;
+      }
+
+      .cls-10, .cls-13, .cls-14, .cls-5, .cls-6, .cls-7, .cls-9 {
+        fill: #f3f2f6;
+      }
+
+      .cls-5 {
+        opacity: 0.3;
+      }
+
+      .cls-10, .cls-11, .cls-6 {
+        opacity: 0.1;
+      }
+
+      .cls-7, .cls-9 {
+        opacity: 0.4;
+      }
+
+      .cls-8 {
+        opacity: 0.046;
+      }
+
+      .cls-11 {
+        fill: #818a96;
+      }
+
+      .cls-12 {
+        opacity: 0.05;
+      }
+
+      .cls-13 {
+        opacity: 0.5;
+      }
+
+      .cls-15 {
+        opacity: 0.7;
+      }
+    </style>
+    <clipPath id="clip-path">
+      <rect id="rec" class="cls-1" width="685" height="1200" transform="translate(3842 -9634)"/>
+    </clipPath>
+  </defs>
+  <rect id="rec-2" data-name="rec" class="cls-2" width="685" height="1200"/>
+  <g id="visual-2" data-name="visual" class="cls-3" transform="translate(-3842 9634)">
+    <g id="Squares_02" data-name="Squares 02" class="cls-4" transform="translate(4322 -9085) rotate(90)">
+      <rect id="Square_08" data-name="Square 08" class="cls-5" width="138" height="137" transform="translate(274 412)"/>
+      <rect id="Square_07b" data-name="Square 07b" class="cls-6" width="137" height="137" transform="translate(137 412)"/>
+      <rect id="Square_07a" data-name="Square 07a" class="cls-7" width="137" height="137" transform="translate(137 412)"/>
+      <rect id="Square_06" data-name="Square 06" class="cls-8" width="137" height="137" transform="translate(137 275)"/>
+      <rect id="Square_05b" data-name="Square 05b" class="cls-9" width="137" height="137" transform="translate(412 138)"/>
+      <rect id="Square_05a" data-name="Square 05a" class="cls-10" width="137" height="137" transform="translate(412 138)"/>
+      <rect id="Square_04" data-name="Square 04" class="cls-11" width="138" height="137" transform="translate(274 138)"/>
+      <rect id="Square_03" data-name="Square 03" class="cls-12" width="138" height="138" transform="translate(274)"/>
+      <rect id="Square_02" data-name="Square 02" class="cls-13" width="137" height="138" transform="translate(137)"/>
+      <rect id="Square_01" data-name="Square 01" class="cls-14" width="136.942" height="138.175" transform="translate(0 275.117)"/>
+    </g>
+    <g id="Squares_02-2" data-name="Squares 02" class="cls-15" transform="translate(4047 -9634)">
+      <rect id="Square_08-2" data-name="Square 08" class="cls-5" width="138" height="137" transform="translate(274 412)"/>
+      <rect id="Square_07b-2" data-name="Square 07b" class="cls-6" width="137" height="137" transform="translate(137 412)"/>
+      <rect id="Square_07a-2" data-name="Square 07a" class="cls-7" width="137" height="137" transform="translate(137 412)"/>
+      <rect id="Square_06-2" data-name="Square 06" class="cls-8" width="137" height="137" transform="translate(137 275)"/>
+      <rect id="Square_05b-2" data-name="Square 05b" class="cls-9" width="137" height="137" transform="translate(412 138)"/>
+      <rect id="Square_05a-2" data-name="Square 05a" class="cls-10" width="137" height="137" transform="translate(412 138)"/>
+      <rect id="Square_04-2" data-name="Square 04" class="cls-11" width="138" height="137" transform="translate(274 138)"/>
+      <rect id="Square_03-2" data-name="Square 03" class="cls-12" width="138" height="138" transform="translate(274)"/>
+      <rect id="Square_02-2" data-name="Square 02" class="cls-13" width="137" height="138" transform="translate(137)"/>
+      <rect id="Square_01-2" data-name="Square 01" class="cls-14" width="136.942" height="138.175" transform="translate(0 275.117)"/>
+    </g>
+  </g>
+</svg>

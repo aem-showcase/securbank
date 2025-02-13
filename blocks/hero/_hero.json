@@ -20,19 +20,18 @@
     {
       "id": "hero",
       "fields": [
-        {
-          "component": "reference",
-          "valueType": "string",
+         {
+          "component": "custom-asset-namespace:custom-asset",
           "name": "image",
           "label": "Image",
-          "multi": false
+          "configUrl": "https://raw.githubusercontent.com/znikolovski/securbank-aem-ue/refs/heads/main/tools/assets-selector/image.config.json",
+          "valueType": "string"
         },
         {
-          "component": "text-input",
-          "valueType": "string",
+          "component": "text",
           "name": "imageAlt",
-          "label": "Alt",
-          "value": ""
+          "label": "Alt Text",
+          "valueType": "string"
         },
         {
           "component": "text-area",

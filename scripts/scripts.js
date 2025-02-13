@@ -23,6 +23,36 @@ import getAudiences from './utils.js';
 
 // Add you plugins below
 // window.hlx.plugins.add('/plugins/my-plugin.js');
+import {
+  initMartech,
+  updateUserConsent,
+  martechEager,
+  martechLazy,
+  martechDelayed,
+} from '../plugins/martech/src/index.js';
+
+const martechLoadedPromise = initMartech(
+  // The WebSDK config
+  // Documentation: https://experienceleague.adobe.com/en/docs/experience-platform/web-sdk/commands/configure/overview#configure-js
+  {
+    datastreamId: 'c22bb196-e6d9-4544-a811-087396cbaff2' /* your datastream id here, formally edgeConfigId */,
+    orgId: '0E061E2D61F93F260A495FD6@AdobeOrg' /* your ims org id here */,
+    onBeforeEventSend: (payload) => {
+      // set custom Target params via 
+      // see doc at https://experienceleague.adobe.com/en/docs/platform-learn/migrate-target-to-websdk/send-parameters#parameter-mapping-summary
+      payload.data.__adobe.target ||= {};
+
+      // set custom Analytics params
+      // see doc at https://experienceleague.adobe.com/en/docs/analytics/implementation/aep-edge/data-var-mapping
+      payload.data.__adobe.analytics ||= {};
+    }
+  },
+  // The library config
+  {
+    launchUrls: ['https://assets.adobedtm.com/59610d662d36/38d84bddc410/launch-987c124fa82d.min.js'],
+    personalization: false,
+  },
+);
 
 /**
  * Gets all the metadata elements that are in the given scope.
@@ -134,6 +164,15 @@ export function decorateMain(main) {
   decorateBlocks(main);
 }
 
+function preloadFile(href, as) {
+  const link = document.createElement('link');
+  link.rel = 'preload';
+  link.as = as;
+  link.crossOrigin = 'anonymous';
+  link.href = href;
+  document.head.appendChild(link);
+}
+
 /**
  * Loads everything needed to get to LCP.
  * @param {Element} doc The container element
@@ -159,10 +198,16 @@ async function loadEager(doc) {
     await runEager(document, experimentationOptions, pluginContext);
   }
 
+  preloadFile('./scripts/preact.js', 'script');
+  preloadFile('./scripts/htm.js', 'script');
+
   if (main) {
     decorateMain(main);
     document.body.classList.add('appear');
-    await loadSection(main.querySelector('.section'), waitForFirstImage);
+    await Promise.all([
+      loadSection(main.querySelector('.section'), waitForFirstImage),
+      martechLoadedPromise.then(martechEager),
+    ]);
   }
 
   sampleRUM.enhance();
@@ -202,6 +247,7 @@ async function loadLazy(doc) {
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
   loadFonts();
 
+  await martechLazy();
   sampleRUM('lazy');
 
   // Add below snippet at the end of the lazy phase
@@ -227,10 +273,12 @@ function loadDelayed() {
   window.setTimeout(() => {
     window.hlx.plugins.load('delayed');
     window.hlx.plugins.run('loadDelayed');
+    martechDelayed();
     // eslint-disable-next-line import/no-cycle
     return import('./delayed.js');
   }, 3000);
   // load anything that can be postponed to the latest here
+  import('./sidekick.js').then(({ initSidekick }) => initSidekick());
 }
 
 async function loadPage() {

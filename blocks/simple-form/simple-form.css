@@ -1,0 +1,321 @@
+:root {
+    --error-color: #ff5f3f;
+    --form-color: #0296A6;
+}
+
+main .simple-form {
+    background-color: white;
+    padding: var(--form-color);
+}
+
+main .simple-form form {
+    display: grid;
+    grid-template-columns: 1fr;
+    column-gap: 130px;
+}
+
+main .simple-form form fieldset {
+    padding: 30px 90px;
+    background-color: #fff;
+    margin-bottom: 30px;
+    border-color: var(--form-color);
+}
+main .simple-form form fieldset legend {
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 1.5;
+    color: var(--form-color);
+}
+main .simple-form form .form-range-wrapper  output {
+    font-size: 20px;
+}
+main .simple-form form output {
+    font-size: 36px;
+    line-height: 44px;
+    font-weight: 800;
+    color: var(--form-color);
+    display: block;
+    
+}
+.form-fieldset-wrapper {
+    display: grid;
+    column-gap: 130px;
+    grid-template-columns: 1fr;
+}
+main .simple-form form .field-wrapper {
+    margin-top: 20px;
+}
+
+.invalid {
+    border: 1px solid var(--error-color);
+    border-left-width: 4px;
+    padding: 5px;
+ }
+
+main .simple-form h2 {
+    padding: var(--spacing-m) 0;
+    font-size: var(--type-heading-l-lh);
+    font-weight: normal;
+}
+
+main .simple-form h3 {
+    padding-top: var(--spacing-m);
+    font-size: var(--type-heading-m-size);
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.error {
+    display: inline-block;
+    padding: 5px 0;
+    color: var(--error-color);
+}
+
+main .simple-form input[type='range'] {
+    height: 5px;
+    accent-color: var(--form-color);
+}
+main .simple-form input,
+main .simple-form textarea,
+main .simple-form select {
+    width: calc(100% - 16px);
+    height: 40px;
+    color: #666;
+    margin-top: 10px;
+    padding-left: 10px;
+    font-size: 1rem;
+}
+
+main .simple-form input[type='checkbox'],
+main .simple-form input[type='radio'] {
+    width: auto;
+    height: auto;
+}
+
+main .simple-form textarea {
+    min-height: 100px;
+}
+
+main .simple-form input:hover,
+main .simple-form select:hover {
+    border-color: rgb(90 92 96);
+}
+
+main .simple-form label {
+    width: 100%;
+    font-size: var(--type-body-s-size);
+    line-height: var(--type-body-s-lh);
+    padding-bottom: var(--spacing-xs);
+    box-sizing: border-box;
+    font-weight: 800;
+    color: #666;
+    text-align: justify;
+}
+
+main .simple-form label.required::after {
+   /* content: "*"; */
+    color: black;
+    padding-left: 5px;
+}
+
+
+main .simple-form .form-checkbox-wrapper input[type='checkbox'] {
+    display: none;
+}
+
+main .simple-form .form-checkbox-wrapper input[type='checkbox'] + label::before {
+    float: left;
+    margin-top: 2px;
+    margin-right: 5px;
+    height: 30px;
+    width: 30px;
+    content: ' ';
+    background: url('./checkbox.svg');
+    background-size: contain;
+}
+
+main .simple-form .form-checkbox-wrapper input[type='checkbox']:checked +label::before {
+    background: url('./checkbox-checked.svg');
+    background-size: contain;
+    content: ' ';
+}
+
+main .simple-form .form-checkbox-wrapper label {
+    font-size: var(--type-body-m-size);
+    line-height: var(--type-body-m-lh);
+    font-weight: normal;
+    text-transform: none;
+    display: block;
+}
+
+h1 {
+    font-weight: 700;
+}
+
+main .simple-form .button {
+    color: #fff;
+    cursor: pointer;
+    margin-top: 20px;
+    padding: 0 1rem;
+    font-size: 1rem;
+    font-weight: bold;
+    position: relative;
+    border: 1px transparent
+}
+
+@media (min-width: 576px) {
+    .form-container {
+        max-width: 540px;
+    }
+}
+  
+  @media (min-width: 768px) {
+    .form-container {
+        max-width: 720px;
+        margin: 0 auto 10px;
+    }
+  
+     form {
+        width: unset;
+        column-gap: 30px;
+        flex-flow: wrap row;
+    }
+  }
+  
+  @media (min-width: 992px) {
+    .form-container {
+        max-width: 960px;
+        row-gap: 58px;
+    }
+  
+    form {
+       column-gap: 130px;
+   }
+    
+  
+     h5 {
+        font-size: 20px;
+        line-height: 28px;
+    }
+    .form-fieldset-wrapper { 
+        grid-template-columns: 1fr 1fr;
+    }
+  }
+  
+  @media (min-width: 1200px) {
+    .form-container {
+        max-width: 1280px;
+    }
+    .form-fieldset-wrapper { 
+        grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  /* eslint-disable-next-line, selector-id-pattern */
+  #how-can-we-help, #give-us--a-call {
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--airless-blue);
+    font-size: var(--heading-font-size-l);
+  }
+
+  .form-question {
+    grid-row: 7/10;
+  }
+
+  main .simple-form form .form-radio-wrapper{
+    margin: 0;
+  }
+
+.form-submit-wrapper button{
+    padding: 0 20px;
+    line-height: 4em;
+    text-transform: uppercase;
+    background-color: var(--form-color);
+    border-color: #fff;
+    color: #fff;
+}
+
+#prudential-loan-pre-qualification-form {
+    color: var(--form-color);
+}
+
+.range-max,
+.range-min {
+    font-size: 14px;
+    line-height: 22px;
+    display: inline-block;
+    color: #494f50;
+    margin-top: 16px;
+}
+
+.range-max {
+    float: right;
+} 
+
+.range-bubble {
+    position: relative;
+    left: calc(var(--current-steps)*100% / (var(--total-steps) + 1));
+  }
+
+.form-terms > div > .range-bubble::after,
+.form-terms > div > .range-min::after,
+.form-terms > div > .range-max::after {
+    content: " years";
+}
+
+
+.form-emi > output::before,
+.form-total > output::before,
+.form-loanAmount > div > .range-min::before,
+.form-loanAmount > div > .range-max::before {
+    content: "$";
+}
+
+.form-rate > output::after {
+    content: "%";
+}
+
+.form-rate > div > .range-min::after,
+.form-rate > div > .range-max::after {
+    content: "%";
+}
+
+
+/** range - slider 
+input[type="range"] {
+    margin: unset;
+    padding: unset;
+    appearance: none;
+    height: 5px;
+    border-radius: 5px;
+    border: none;
+    background-image: linear-gradient(to right, var(--form-color) calc(100% * var(--current-steps)/var(--total-steps)), #C5C5C5 calc(100% * var(--current-steps)/var(--total-steps)));
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 3px solid var(--form-color);
+    cursor: pointer;
+    outline: 3px solid #ffffff;
+  }
+  input[type="range"]:focus::-webkit-slider-thumb {
+    border-color: #006341;
+  }
+  .range-bubble {
+    font-family: 'Libre Franklin', Arial, Helvetica, sans-serif;
+    color: #17252e;
+    font-size: 20px;
+    line-height: 28px;
+    font-weight: 700;
+    position: relative;
+    left: calc(var(--current-steps)*100% / (var(--total-steps) + 1));
+    display: inline-block;
+    padding-bottom: 12px;
+  }
+  .range-min-max::after {
+    content: var(--max-value);
+  } */

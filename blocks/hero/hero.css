@@ -91,6 +91,10 @@ main .hero img {
   background-color: white;
 }
 
+.login-form {
+  box-sizing: content-box;
+}
+
 #log-in .login-form-message {
   overflow: visible;
   padding: 40px;
@@ -233,14 +237,6 @@ main .hero img {
   background-color: white;
 }
 
-@media (width <= 1280px) {
-  .user-info {
-    left: 730px;
-    width: 300px;
-  }
-}
-
-
 .user-info .dashboard-mini {
   overflow: visible;
   padding: 40px;
@@ -249,7 +245,7 @@ main .hero img {
   color: rgba(44 44 44 / 100%);
 }
 
-.dashboard-mini .dashboard-mini-welcome {
+.dashboard-mini__welcome {
   width: 157px;
   white-space: nowrap;
   line-height: 30px;
@@ -259,7 +255,7 @@ main .hero img {
   font-size: 24px;
 }
 
-.dashboard-mini-account-balance-heading {
+.dashboard-mini__account-balance-heading {
   width: 140px;
   white-space: nowrap;
   line-height: 18px;
@@ -273,7 +269,7 @@ main .hero img {
   text-transform: uppercase;
 }
 
-.dashboard-mini-account-balance-value {
+.dashboard-mini__account-balance-value {
   width: 140px;
   white-space: nowrap;
   line-height: 18px;
@@ -283,7 +279,7 @@ main .hero img {
   font-style: normal;
   font-weight: bold;
   font-size: 48px;
-  color: rgba(44 44 44 / 100%);
+  color: rgba(44 44 44);
 }
 
 @media (width < 1050px) {

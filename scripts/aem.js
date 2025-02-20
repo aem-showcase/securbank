@@ -235,11 +235,42 @@ function createOptimizedPicture(
   alt = '',
   eager = false,
   breakpoints = [{ media: '(min-width: 600px)', width: '2000' }, { width: '750' }],
+  dm = false,
+  imageName = '',
 ) {
   const url = new URL(src, window.location.href);
   const picture = document.createElement('picture');
   const { pathname } = url;
   const ext = pathname.substring(pathname.lastIndexOf('.') + 1);
+
+  if (dm && imageName !== '') {
+    // webp
+    breakpoints.forEach((br) => {
+      const source = document.createElement('source');
+      if (br.media) source.setAttribute('media', br.media);
+      source.setAttribute('type', 'image/webp');
+      source.setAttribute('srcset', `${url}/as/${imageName}.webp?preferwebp=true&width=${br.width}&format=webply`);
+      picture.appendChild(source);
+    });
+
+    // fallback
+    breakpoints.forEach((br, i) => {
+      if (i < breakpoints.length - 1) {
+        const source = document.createElement('source');
+        if (br.media) source.setAttribute('media', br.media);
+        source.setAttribute('srcset', `${url}/as/${imageName}.webp?preferwebp=true&width=${br.width}&format=webply`);
+        picture.appendChild(source);
+      } else {
+        const img = document.createElement('img');
+        img.setAttribute('loading', eager ? 'eager' : 'lazy');
+        img.setAttribute('alt', alt);
+        picture.appendChild(img);
+        img.setAttribute('src', `${url}/as/${imageName}.webp?preferwebp=true&width=${br.width}&format=webply`);
+      }
+    });
+
+    return picture;
+  }
 
   // webp
   breakpoints.forEach((br) => {

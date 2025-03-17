@@ -2616,6 +2616,25 @@ const request$1 = (url, data = null, options = {}) => {
             body,
             headers
         };
+    }).catch(err => {
+        console.error(`Error while fetching response from ${url} : ${err}`);
+
+        // Determine error type
+        const errorType = err instanceof TypeError && error.message.includes('CORS')
+            ? 'CORS_ERROR'
+            : err instanceof TypeError && (
+                err.message.includes('Failed to fetch') ||
+                err.message.includes('Network request failed')
+              )
+            ? 'NETWORK_ERROR'
+            : 'UNKNOWN_ERROR';
+
+        return {
+          status: 500,
+          body: err,
+          errorType,
+          errorMessage: err.message
+        };
     });
 };
 const defaultRequestOptions = {

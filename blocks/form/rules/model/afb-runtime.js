@@ -2616,6 +2616,13 @@ const request$1 = (url, data = null, options = {}) => {
             body,
             headers
         };
+    }).catch(err => {
+        console.error(`Error while fetching response from ${url} : ${err}`);
+        return {
+            status: 500,
+            body: err,
+            headers: {}
+        };
     });
 };
 const defaultRequestOptions = {

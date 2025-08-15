@@ -25,8 +25,8 @@ import {
 
 const experimentationConfig = {
   prodHost: 'www.securbankdemo.com',
-  isProd: () => window.location.hostname.endsWith('aem.page')
-      || window.location.hostname === ('localhost'),
+  isProd: () => !(window.location.hostname.endsWith('aem.page')
+      || window.location.hostname === 'localhost'),
   audiences: getAudiences(),
 };
 
@@ -132,15 +132,6 @@ async function loadEager(doc) {
   await runExperimentation(doc, experimentationConfig);
   // await window.hlx.plugins.run('loadEager');
   const main = doc.querySelector('main');
-  const experimentationOptions = {
-    prodHost: 'www.securbankdemo.com',
-    isProd: () => !(window.location.hostname.endsWith('aem.page')
-    || window.location.hostname === ('localhost')),
-    rumSamplingRate: 1,
-    audiences: getAudiences(),
-  };
-
-
   if (main) {
     decorateMain(main);
     document.body.classList.add('appear');

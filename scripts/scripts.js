@@ -25,8 +25,6 @@ import {
 
 const experimentationConfig = {
   prodHost: 'www.securbankdemo.com',
-  isProd: () => !(window.location.hostname.endsWith('aem.page')
-      || window.location.hostname === 'localhost'),
   audiences: getAudiences(),
 };
 

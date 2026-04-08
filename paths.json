@@ -9,6 +9,7 @@
   ],
   "includes": [
     "/content/securbank/en/",
-    "/content/dam/securbank/"
+    "/content/dam/securbank/",
+    "/content/forms/af"
   ]
 }

@@ -1,19 +1,27 @@
-import {
-  createButton, createFieldWrapper, createLabel, getHTMLRenderType,
-  createHelpText,
-  getId,
-  stripTags,
-  checkValidation,
-  toClassName,
-  getSitePageName,
-} from './util.js';
+import { createOptimizedPicture, loadCSS } from '../../scripts/aem.js';
+import transferRepeatableDOM, { insertAddButton, insertRemoveButton } from './components/repeat/repeat.js';
+import { emailPattern, getSubmitBaseUrl, SUBMISSION_SERVICE } from './constant.js';
 import GoogleReCaptcha from './integrations/recaptcha.js';
 import componentDecorator from './mappings.js';
-import DocBasedFormToAF from './transform.js';
-import transferRepeatableDOM, { insertAddButton, insertRemoveButton } from './components/repeat/repeat.js';
 import { handleSubmit } from './submit.js';
-import { getSubmitBaseUrl, emailPattern } from './constant.js';
-import { createOptimizedPicture } from '../../scripts/aem.js';
+import DocBasedFormToAF from './transform.js';
+import {
+  checkValidation,
+  createButton,
+  createDropdownUsingEnum,
+  createFieldWrapper,
+  createHelpText,
+  createLabel,
+  createRadioOrCheckboxUsingEnum,
+  extractIdFromUrl,
+  getHTMLRenderType,
+  getSitePageName,
+  setConstraints,
+  setPlaceholder,
+  stripTags,
+  createRadioOrCheckbox,
+  createInput,
+} from './util.js';
 
 export const DELAY_MS = 0;
 let captchaField;
@@ -25,42 +33,6 @@ const withFieldWrapper = (element) => (fd) => {
   return wrapper;
 };
 
-function setPlaceholder(element, fd) {
-  if (fd.placeholder) {
-    element.setAttribute('placeholder', fd.placeholder);
-  }
-}
-
-const constraintsDef = Object.entries({
-  'password|tel|email|text': [['maxLength', 'maxlength'], ['minLength', 'minlength'], 'pattern'],
-  'number|range|date': [['maximum', 'Max'], ['minimum', 'Min'], 'step'],
-  file: ['accept', 'Multiple'],
-  panel: [['maxOccur', 'data-max'], ['minOccur', 'data-min']],
-}).flatMap(([types, constraintDef]) => types.split('|')
-  .map((type) => [type, constraintDef.map((cd) => (Array.isArray(cd) ? cd : [cd, cd]))]));
-
-const constraintsObject = Object.fromEntries(constraintsDef);
-
-function setConstraints(element, fd) {
-  const renderType = getHTMLRenderType(fd);
-  const constraints = constraintsObject[renderType];
-  if (constraints) {
-    constraints
-      .filter(([nm]) => fd[nm])
-      .forEach(([nm, htmlNm]) => {
-        element.setAttribute(htmlNm, fd[nm]);
-      });
-  }
-}
-
-function createInput(fd) {
-  const input = document.createElement('input');
-  input.type = getHTMLRenderType(fd);
-  setPlaceholder(input, fd);
-  setConstraints(input, fd);
-  return input;
-}
-
 const createTextArea = withFieldWrapper((fd) => {
   const input = document.createElement('textarea');
   setPlaceholder(input, fd);
@@ -69,58 +41,7 @@ const createTextArea = withFieldWrapper((fd) => {
 
 const createSelect = withFieldWrapper((fd) => {
   const select = document.createElement('select');
-  select.required = fd.required;
-  select.title = fd.tooltip ? stripTags(fd.tooltip, '') : '';
-  select.readOnly = fd.readOnly;
-  select.multiple = fd.type === 'string[]' || fd.type === 'boolean[]' || fd.type === 'number[]';
-  let ph;
-  if (fd.placeholder) {
-    ph = document.createElement('option');
-    ph.textContent = fd.placeholder;
-    ph.setAttribute('disabled', '');
-    ph.setAttribute('value', '');
-    select.append(ph);
-  }
-  let optionSelected = false;
-
-  const addOption = (label, value) => {
-    const option = document.createElement('option');
-    option.textContent = label instanceof Object ? label?.value?.trim() : label?.trim();
-    option.value = (typeof value === 'string' ? value.trim() : value) || label?.trim();
-    if (fd.value === option.value || (Array.isArray(fd.value) && fd.value.includes(option.value))) {
-      option.setAttribute('selected', '');
-      optionSelected = true;
-    }
-    select.append(option);
-    return option;
-  };
-
-  const options = fd?.enum || [];
-  const optionNames = fd?.enumNames ?? options;
-
-  if (options.length === 1
-    && options?.[0]?.startsWith('https://')) {
-    const optionsUrl = new URL(options?.[0]);
-    // using async to avoid rendering
-    if (optionsUrl.hostname.endsWith('hlx.page')
-    || optionsUrl.hostname.endsWith('hlx.live')) {
-      fetch(`${optionsUrl.pathname}${optionsUrl.search}`)
-        .then(async (response) => {
-          const json = await response.json();
-          const values = [];
-          json.data.forEach((opt) => {
-            addOption(opt.Option, opt.Value);
-            values.push(opt.Value || opt.Option);
-          });
-        });
-    }
-  } else {
-    options.forEach((value, index) => addOption(optionNames?.[index], value));
-  }
-
-  if (ph && optionSelected === false) {
-    ph.setAttribute('selected', '');
-  }
+  createDropdownUsingEnum(fd, select);
   return select;
 });
 
@@ -131,18 +52,6 @@ function createHeading(fd) {
   heading.id = fd.id;
   wrapper.append(heading);
 
-  return wrapper;
-}
-
-function createRadioOrCheckbox(fd) {
-  const wrapper = createFieldWrapper(fd);
-  const input = createInput(fd);
-  const [value, uncheckedValue] = fd.enum || [];
-  input.value = value;
-  if (typeof uncheckedValue !== 'undefined') {
-    input.dataset.uncheckedValue = uncheckedValue;
-  }
-  wrapper.insertAdjacentElement('afterbegin', input);
   return wrapper;
 }
 
@@ -188,44 +97,7 @@ function setConstraintsMessage(field, messages = {}) {
 
 function createRadioOrCheckboxGroup(fd) {
   const wrapper = createFieldSet({ ...fd });
-  const type = fd.fieldType.split('-')[0];
-  fd?.enum?.forEach((value, index) => {
-    const label = (typeof fd?.enumNames?.[index] === 'object' && fd?.enumNames?.[index] !== null) ? fd?.enumNames[index].value : fd?.enumNames?.[index] || value;
-    const id = getId(fd.name);
-    const field = createRadioOrCheckbox({
-      name: fd.name,
-      id,
-      label: { value: label },
-      fieldType: type,
-      enum: [value],
-      required: fd.required,
-    });
-    const { variant, 'afs:layout': layout } = fd.properties;
-    if (variant === 'cards') {
-      wrapper.classList.add(variant);
-    } else {
-      wrapper.classList.remove('cards');
-    }
-    if (layout?.orientation === 'horizontal') {
-      wrapper.classList.add('horizontal');
-    }
-    if (layout?.orientation === 'vertical') {
-      wrapper.classList.remove('horizontal');
-    }
-    field.classList.remove('field-wrapper', `field-${toClassName(fd.name)}`);
-    const input = field.querySelector('input');
-    input.id = id;
-    input.dataset.fieldType = fd.fieldType;
-    input.name = fd.name;
-    input.checked = Array.isArray(fd.value) ? fd.value.includes(value) : value === fd.value;
-    if ((index === 0 && type === 'radio') || type === 'checkbox') {
-      input.required = fd.required;
-    }
-    if (fd.enabled === false || fd.readOnly === true) {
-      input.setAttribute('disabled', 'disabled');
-    }
-    wrapper.appendChild(field);
-  });
+  createRadioOrCheckboxUsingEnum(fd, wrapper);
   wrapper.dataset.required = fd.required;
   if (fd.tooltip) {
     wrapper.title = stripTags(fd.tooltip, '');
@@ -250,7 +122,7 @@ function createPlainText(fd) {
 function createImage(fd) {
   const field = createFieldWrapper(fd);
   field.id = fd?.id;
-  const imagePath = fd.source || fd.properties['fd:repoPath'] || '';
+  const imagePath = fd.value || fd.properties['fd:repoPath'] || '';
   const altText = fd.altText || fd.name;
   field.append(createOptimizedPicture(imagePath, altText));
   return field;
@@ -310,8 +182,27 @@ function inputDecorator(field, element) {
       input.setAttribute('display-value', field.displayValue ?? '');
       input.type = 'text';
       input.value = field.displayValue ?? '';
-      input.addEventListener('touchstart', () => { input.type = field.type; }); // in mobile devices the input type needs to be toggled before focus
-      input.addEventListener('focus', () => handleFocus(input, field));
+      // Handle mobile touch events to enable native date picker
+      let isMobileTouch = false;
+      input.addEventListener('touchstart', () => {
+        isMobileTouch = true;
+        input.type = field.type;
+        // Set the edit value immediately to prevent empty field
+        const editValue = input.getAttribute('edit-value');
+        if (editValue) {
+          input.value = editValue;
+        }
+      });
+
+      input.addEventListener('focus', () => {
+        // Only change type on desktop or if not already changed by touchstart
+        if (!isMobileTouch && input.type !== field.type) {
+          input.type = field.type;
+        }
+        handleFocus(input, field);
+        // Reset mobile touch flag
+        isMobileTouch = false;
+      });
       input.addEventListener('blur', () => handleFocusOut(input));
     } else if (input.type !== 'file') {
       input.value = field.value ?? '';
@@ -348,6 +239,23 @@ function inputDecorator(field, element) {
   }
 }
 
+function decoratePanelContainer(panelDefinition, panelContainer) {
+  if (!panelContainer) return;
+
+  const isPanelWrapper = (container) => container.classList?.contains('panel-wrapper');
+
+  const shouldAddLabel = (container, panel) => panel.label && !container.querySelector(`legend[for=${container.dataset.id}]`);
+
+  if (isPanelWrapper(panelContainer)) {
+    if (shouldAddLabel(panelContainer, panelDefinition)) {
+      const legend = createLegend(panelDefinition);
+      if (legend) {
+        panelContainer.insertAdjacentElement('afterbegin', legend);
+      }
+    }
+  }
+}
+
 function renderField(fd) {
   const fieldType = fd?.fieldType?.replace('-input', '') ?? 'text';
   const renderer = fieldRenderers[fieldType];
@@ -368,7 +276,7 @@ function renderField(fd) {
   return field;
 }
 
-export async function generateFormRendition(panel, container, getItems = (p) => p?.items) {
+export async function generateFormRendition(panel, container, formId, getItems = (p) => p?.items) {
   const items = getItems(panel) || [];
   const promises = items.map(async (field) => {
     field.value = field.value ?? '';
@@ -385,16 +293,17 @@ export async function generateFormRendition(panel, container, getItems = (p) => 
     }
     colSpanDecorator(field, element);
     if (field?.fieldType === 'panel') {
-      await generateFormRendition(field, element, getItems);
+      await generateFormRendition(field, element, formId, getItems);
       return element;
     }
-    await componentDecorator(element, field, container);
+    await componentDecorator(element, field, container, formId);
     return element;
   });
 
   const children = await Promise.all(promises);
   container.append(...children.filter((_) => _ != null));
-  await componentDecorator(container, panel);
+  decoratePanelContainer(panel, container);
+  await componentDecorator(container, panel, null, formId);
 }
 
 function enableValidation(form) {
@@ -409,9 +318,13 @@ function enableValidation(form) {
   });
 }
 
+function isDocumentBasedForm(formDef) {
+  return formDef?.[':type'] === 'sheet' && formDef?.data;
+}
+
 async function createFormForAuthoring(formDef) {
   const form = document.createElement('form');
-  await generateFormRendition(formDef, form, (container) => {
+  await generateFormRendition(formDef, form, formDef.id, (container) => {
     if (container[':itemsOrder'] && container[':items']) {
       return container[':itemsOrder'].map((itemKey) => container[':items'][itemKey]);
     }
@@ -420,15 +333,17 @@ async function createFormForAuthoring(formDef) {
   return form;
 }
 
-export async function createForm(formDef, data) {
+export async function createForm(formDef, data, source = 'aem') {
   const { action: formPath } = formDef;
   const form = document.createElement('form');
   form.dataset.action = formPath;
+  form.dataset.source = source;
   form.noValidate = true;
   if (formDef.appliedCssClassNames) {
     form.className = formDef.appliedCssClassNames;
   }
-  await generateFormRendition(formDef, form);
+  const formId = extractIdFromUrl(formPath); // formDef.id returns $form after getState()
+  await generateFormRendition(formDef, form, formId);
 
   let captcha;
   if (captchaField) {
@@ -445,29 +360,36 @@ export async function createForm(formDef, data) {
     captcha.loadCaptcha(form);
   }
 
-  enableValidation(form);
-  transferRepeatableDOM(form);
+  // Only enable DOM validation for doc-based forms; edge forms use the model.
+  if (source === 'sheet') {
+    enableValidation(form);
+  }
+  transferRepeatableDOM(form, formDef, form, formId);
 
-  if (afModule) {
+  if (afModule && typeof Worker === 'undefined') {
     window.setTimeout(async () => {
       afModule.loadRuleEngine(formDef, form, captcha, generateFormRendition, data);
     }, DELAY_MS);
   }
 
   form.addEventListener('reset', async () => {
-    const newForm = await createForm(formDef);
-    document.querySelector(`[data-action="${formDef.action}"]`).replaceWith(newForm);
+    const currentSource = form.dataset.source || 'aem';
+    const response = await createForm(formDef, undefined, currentSource);
+    if (response?.form) {
+      document.querySelector(`[data-action="${form?.dataset?.action}"]`)?.replaceWith(response?.form);
+    }
   });
 
   form.addEventListener('submit', (e) => {
     handleSubmit(e, form, captcha);
   });
 
-  return form;
-}
-
-function isDocumentBasedForm(formDef) {
-  return formDef?.[':type'] === 'sheet' && formDef?.data;
+  return {
+    form,
+    captcha,
+    generateFormRendition,
+    data,
+  };
 }
 
 function cleanUp(content) {
@@ -514,7 +436,7 @@ export async function fetchForm(pathname) {
   // get the main form
   let data;
   let path = pathname;
-  if (path.startsWith(window.location.origin) && !path.endsWith('.json')) {
+  if (path.startsWith(window.location.origin) && !path.includes('.json')) {
     if (path.endsWith('.html')) {
       path = path.substring(0, path.lastIndexOf('.html'));
     }
@@ -534,12 +456,59 @@ export async function fetchForm(pathname) {
         }
         return doc;
       } catch (e) {
+        // eslint-disable-next-line no-console
         console.error('Unable to fetch form definition for path', pathname, path);
         return null;
       }
     });
   }
   return data;
+}
+
+function addRequestContextToForm(formDef) {
+  if (formDef && typeof formDef === 'object') {
+    formDef.properties = formDef.properties || {};
+
+    // Add URL parameters
+    try {
+      const urlParams = new URLSearchParams(window?.location?.search || '');
+      if (!formDef.properties.queryParams) {
+        formDef.properties.queryParams = {};
+      }
+      urlParams?.forEach((value, key) => {
+        formDef.properties.queryParams[key?.toLowerCase()] = value;
+      });
+    } catch (e) {
+      console.warn('Error reading URL parameters:', e);
+    }
+
+    // Add cookies
+    try {
+      const cookies = document?.cookie.split(';');
+      formDef.properties.cookies = {};
+      cookies?.forEach((cookie) => {
+        if (cookie.trim()) {
+          const [key, value] = cookie.trim().split('=');
+          formDef.properties.cookies[key.trim()] = value || '';
+        }
+      });
+    } catch (e) {
+      console.warn('Error reading cookies:', e);
+    }
+  }
+}
+
+function loadFormCustomStyles(formDef) {
+  const { style } = formDef?.properties || {};
+  if (style) {
+    try {
+      const base = (window.hlx?.codeBasePath || '').replace(/\/$/, '');
+      const stylePath = style.startsWith('/') ? style : `/${style}`;
+      loadCSS(`${base}${stylePath}`);
+    } catch (error) {
+      console.error('Failed to load form CSS:', error);
+    }
+  }
 }
 
 export default async function decorate(block) {
@@ -556,17 +525,33 @@ export default async function decorate(block) {
   let rules = true;
   let form;
   if (formDef) {
-    formDef.action = getSubmitBaseUrl() + (formDef.action || '');
+    const submitProps = formDef?.properties?.['fd:submit'];
+    const actionType = submitProps?.actionName || formDef?.properties?.actionType;
+    const spreadsheetUrl = submitProps?.spreadsheet?.spreadsheetUrl
+      || formDef?.properties?.spreadsheetUrl;
+
+    if (actionType === 'spreadsheet' && spreadsheetUrl) {
+      // Check if we're in an iframe and use parent window path if available
+      const iframePath = window.frameElement ? window.parent.location.pathname
+        : window.location.pathname;
+      formDef.action = SUBMISSION_SERVICE + btoa(pathname || iframePath);
+    } else {
+      formDef.action = getSubmitBaseUrl() + (formDef.action || '');
+    }
     if (isDocumentBasedForm(formDef)) {
       const transform = new DocBasedFormToAF();
-      formDef = transform.transform(formDef);
+      formDef = transform.transform(formDef, { block });
       source = 'sheet';
-      form = await createForm(formDef);
+      loadFormCustomStyles(formDef);
+      const response = await createForm(formDef, null, source);
+      form = response?.form;
       const docRuleEngine = await import('./rules-doc/index.js');
       docRuleEngine.default(formDef, form);
       rules = false;
     } else {
+      loadFormCustomStyles(formDef);
       afModule = await import('./rules/index.js');
+      addRequestContextToForm(formDef);
       if (afModule && afModule.initAdaptiveForm && !block.classList.contains('edit-mode')) {
         form = await afModule.initAdaptiveForm(formDef, createForm);
       } else {
@@ -574,12 +559,12 @@ export default async function decorate(block) {
       }
     }
     form.dataset.redirectUrl = formDef.redirectUrl || '';
-    form.dataset.thankYouMsg = formDef.thankYouMsg || formDef?.properties?.thankYouMessageContent || '';
+    form.dataset.thankYouMsg = formDef.thankYouMsg || '';
     form.dataset.action = formDef.action || pathname?.split('.json')[0];
     form.dataset.source = source;
     form.dataset.rules = rules;
     form.dataset.id = formDef.id;
-    if (source === 'aem' && formDef.properties) {
+    if (source === 'aem' && formDef.properties && formDef.properties['fd:path']) {
       form.dataset.formpath = formDef.properties['fd:path'];
     }
     container.replaceWith(form);

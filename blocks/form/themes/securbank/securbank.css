@@ -1,0 +1,245 @@
+/* ===================================================================
+   SecureBank form theme
+   Applied when theme = 'securbank' is selected on the form container.
+   Scoped to .form.securbank — overrides base form.css via CSS variables
+   and structural rules where variables are not sufficient.
+   =================================================================== */
+
+/* ------------------------------------------------------------------
+   1. TOKEN OVERRIDES
+   ------------------------------------------------------------------ */
+.form.securbank {
+  --button-primary-color: #0d9488;
+  --button-primary-hover-color: #0f766e;
+  --form-button-background-color: #134e4a;
+  --form-button-background-hover-color: #0f766e;
+  --form-button-padding: 14px 40px;
+  --label-color: #374151;
+  --border-color: #d1d5db;
+  --form-label-color: #374151;
+  --form-label-font-size: 0.875rem;
+  --form-label-font-weight: 500;
+  --form-input-border-color: #d1d5db;
+  --form-input-font-size: 0.9375rem;
+  --form-input-padding: 0.625rem 0.75rem;
+  --form-field-vert-gap: 16px;
+  --form-field-horz-gap: 24px;
+  --form-wizard-number-color: #0d9488;
+  --form-fieldset-legend-font-size: 1.25rem;
+  --form-fieldset-legend-font-weight: 700;
+  --form-fieldset-legend-color: #111827;
+  --form-paragraph-color: #6b7280;
+  --form-paragraph-font-size: 0.875rem;
+  --form-paragraph-margin: 0 0 20px;
+    --form-padding: 0;
+    --form-background-color: transparent;
+}
+
+main .form-container {
+    padding: 0px;
+    background-color: transparent;
+}
+
+/* ------------------------------------------------------------------
+   2. FORM CONTAINER
+   ------------------------------------------------------------------ */
+main .form.securbank form {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  padding: 32px;
+  margin: 0 auto;
+}
+
+/* ------------------------------------------------------------------
+   3. INPUTS
+   ------------------------------------------------------------------ */
+main .form.securbank input,
+main .form.securbank textarea,
+main .form.securbank select {
+  border-radius: 8px;
+  border-color: #d1d5db;
+  height: 44px;
+  margin-top: 6px;
+  margin-bottom: 0;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+main .form.securbank input:focus,
+main .form.securbank textarea:focus,
+main .form.securbank select:focus {
+  outline: none;
+  border-color: #0d9488;
+  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.12);
+}
+
+main .form.securbank input:hover,
+main .form.securbank select:hover {
+  border-color: #9ca3af;
+}
+
+main .form.securbank textarea {
+  height: auto;
+  border-radius: 8px;
+}
+
+/* ------------------------------------------------------------------
+   4. LABELS
+   ------------------------------------------------------------------ */
+main .form.securbank label,
+main .form.securbank fieldset.checkbox-group-wrapper legend,
+main .form.securbank fieldset.radio-group-wrapper legend {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  letter-spacing: 0.01em;
+}
+
+/* ------------------------------------------------------------------
+   5. BUTTON — Continue / Submit
+   ------------------------------------------------------------------ */
+main .form.securbank button {
+  background: #134e4a;
+  color: #fff;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: 0.01em;
+  transition: background 0.15s;
+  border: none;
+}
+
+main .form.securbank button:hover {
+  background: #0f766e;
+}
+
+main .form.securbank .button-wrapper button:hover {
+  border: 2px solid #0f766e;
+  color: #0f766e;
+  background: transparent;
+}
+
+/* ------------------------------------------------------------------
+   6. WIZARD NAVIGATION
+   ------------------------------------------------------------------ */
+
+/* Container */
+main .form.securbank .wizard-menu-items {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #f3f4f6;
+  margin-bottom: 15px;
+}
+
+/* Each step: number circle + label side by side */
+main .form.securbank .wizard-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #9ca3af;
+  white-space: nowrap;
+}
+
+/* Overriding base counter circle */
+main .form.securbank .wizard-menu-item::before {
+  width: 40px;
+  height: 40px;
+  border: 2px solid #d1d5db;
+  background: #fff;
+  color: #9ca3af;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 0.875rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+
+/* Connector line between steps */
+main .form.securbank .wizard-menu-item + .wizard-menu-item {
+  margin-left: 8px;
+}
+
+main .form.securbank .wizard-menu-item + .wizard-menu-item::after {
+  content: '';
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: #e5e7eb;
+  order: -1;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+/* Active step */
+main .form.securbank .wizard-menu-active-item {
+  color: #0d9488;
+  font-weight: 600;
+}
+
+main .form.securbank .wizard-menu-active-item::before {
+  background: #0d9488;
+  border-color: #0d9488;
+  color: #fff;
+}
+
+/* ------------------------------------------------------------------
+   7. WIZARD STEP PANEL — title + description
+   ------------------------------------------------------------------ */
+main .form.securbank .wizard > .current-wizard-step > legend {
+  display: block;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 4px;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+/* ------------------------------------------------------------------
+   8. FIELD WRAPPERS — tighten vertical spacing
+   ------------------------------------------------------------------ */
+main .form.securbank form p,
+main .form.securbank form .field-wrapper {
+  margin: 0;
+}
+
+/* ------------------------------------------------------------------
+   9. REQUIRED ASTERISK — use teal instead of base red
+   ------------------------------------------------------------------ */
+main .form.securbank [data-required="true"] > label::after {
+  color: #ef4444;
+}
+
+/* ------------------------------------------------------------------
+   10. WIZARD BUTTON WRAPPER
+   ------------------------------------------------------------------ */
+main .form.securbank .wizard-button-wrapper {
+  justify-content: flex-start;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid #f3f4f6;
+}
+
+/* ------------------------------------------------------------------
+   11. RESPONSIVE
+   ------------------------------------------------------------------ */
+@media (width <= 599px) {
+  main .form.securbank form {
+    padding: 20px 16px;
+    border-radius: 12px;
+  }
+
+  main .form.securbank .wizard-menu-item + .wizard-menu-item::after {
+    width: 20px;
+  }
+}

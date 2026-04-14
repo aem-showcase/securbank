@@ -21,7 +21,7 @@ module.exports = {
     // Per-model cell limits for AEM Forms components (each set to their actual field count)
     'xwalk/max-cells': ['error', {
       '*': 4, // default limit for non-form blocks
-      form: 17,
+      form: 18,
       wizard: 16, // 12 base + 4 variant/label fields added for continueOnly support
       'card-choice': 20,
       'form-button': 7,

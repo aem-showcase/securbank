@@ -270,6 +270,113 @@ main .section-heading {
     width: 100%;
 }
 
+/* 60/40 split — form on left, promotional content on right.
+   Uses grid so the ratio is exact and holds regardless of content height. */
+.section.split {
+    display: grid;
+    grid-template-columns: var(--split-left, 7fr) var(--split-right, 3fr);
+    gap: 40px;
+    padding: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* In a split grid the grid itself controls item sizing.
+   The global `.section > div { margin: auto }` rule collapses grid items to
+   their intrinsic width and centres them, leaving a gap on the left of the
+   form column. Reset both properties here so items fill their column tracks. */
+.section.split > div {
+    max-width: unset;
+    margin: 0;
+}
+
+/* Form (left) stays top-aligned; promo panel (right) fills the full row height */
+.section.split > :first-child {
+    align-self: start;
+}
+
+.section.split > :nth-child(2) {
+    align-self: stretch;
+}
+
+/* Any block beyond the first two spans the full row */
+.section.split > :nth-child(n+3) {
+    grid-column: 1 / -1;
+}
+
+/* Right panel and its image fill the row height, anchored to the top */
+.section.split > :nth-child(2),
+.section.split > :nth-child(2) > div {
+    height: 100%;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.section.split > :nth-child(2) img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    object-position: center top;
+    display: block;
+}
+
+/* Remove default <p> margin so the image fills from the very top of the column */
+.section.split > :nth-child(2) p {
+    margin: 0;
+}
+
+.section.split > :nth-child(2) picture {
+    display: block;
+}
+
+@media (width < 1200px) {
+    .section.split {
+        gap: 24px;
+        padding: 20px;
+    }
+}
+
+@media (width < 900px) {
+    .section.split {
+        grid-template-columns: 1fr;
+        padding: 0;
+    }
+}
+
+/* Tighten column gap inside the overlap card — 40px feels too wide there */
+.section.overlap.split {
+    gap: 16px;
+}
+
+/* When a form sits inside an overlap section, suppress the form-wrapper's
+   own card appearance — the section itself provides the outer container. */
+.section.overlap .form-wrapper {
+    background: transparent;
+    box-shadow: none;
+    border-radius: 0;
+    padding: 0;
+}
+
+/* Overlap — section rises over the previous section */
+.section.overlap {
+    position: relative;
+    z-index: 1;
+    margin-top: -80px;
+    background: transparent;
+    border-radius: 16px 16px 0 0;
+    box-shadow: 0 -8px 32px rgb(0 0 0 / 12%);
+    padding: 2px;
+}
+
+@media (width < 900px) {
+    .section.overlap {
+        margin-top: -40px;
+        padding: 24px 16px;
+        border-radius: 12px 12px 0 0;
+    }
+}
+
 /* Media queries */
 @media (width < 1200px) {
     .section.columns {

@@ -56,6 +56,22 @@
               "name": "style",
               "label": "Form Specific styles path",
               "valueType": "string"
+            },
+            {
+              "component": "multiselect",
+              "name": "theme",
+              "label": "Theme",
+              "valueType": "string",
+              "options": [
+                {
+                  "name": "Default",
+                  "value": ""
+                },
+                {
+                  "name": "SecureBank",
+                  "value": "securbank"
+                }
+              ]
             }
           ]
         }

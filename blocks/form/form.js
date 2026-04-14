@@ -511,6 +511,19 @@ function loadFormCustomStyles(formDef) {
   }
 }
 
+function applyFormTheme(formDef, block) {
+  const { theme } = formDef?.properties || {};
+  if (!theme) return;
+  // theme may be a comma-separated string or an array depending on multiselect serialisation
+  const themes = (Array.isArray(theme) ? theme : theme.split(','))
+    .map((t) => t.trim()).filter(Boolean);
+  const base = (window.hlx?.codeBasePath || '').replace(/\/$/, '');
+  themes.forEach((t) => {
+    block.classList.add(t);
+    loadCSS(`${base}/blocks/form/themes/${t}/${t}.css`);
+  });
+}
+
 export default async function decorate(block) {
   let container = block.querySelector('a[href]');
   let formDef;
@@ -543,6 +556,7 @@ export default async function decorate(block) {
       formDef = transform.transform(formDef, { block });
       source = 'sheet';
       loadFormCustomStyles(formDef);
+      applyFormTheme(formDef, block);
       const response = await createForm(formDef, null, source);
       form = response?.form;
       const docRuleEngine = await import('./rules-doc/index.js');
@@ -550,6 +564,7 @@ export default async function decorate(block) {
       rules = false;
     } else {
       loadFormCustomStyles(formDef);
+      applyFormTheme(formDef, block);
       afModule = await import('./rules/index.js');
       addRequestContextToForm(formDef);
       if (afModule && afModule.initAdaptiveForm && !block.classList.contains('edit-mode')) {

@@ -26,7 +26,7 @@ import { getSubmitBaseUrl } from '../constant.js';
  */
 function externalize(url) {
   const submitBaseUrl = getSubmitBaseUrl();
-  if (submitBaseUrl) {
+  if (submitBaseUrl && !URL.canParse(url)) {
     return `${submitBaseUrl}${url}`;
   }
   return url;

@@ -114,6 +114,46 @@ main .form.securbank button:hover {
   background: #0f766e;
 }
 
+/* NPS rating buttons must not inherit the global submit-button style */
+main .form.securbank .nps-btn {
+  background: #fff;
+  color: #374151;
+  border-radius: 0;
+  border: 1px solid #d1d5db;
+  border-right: none;
+  font-weight: 500;
+  font-size: 0.9rem;
+  letter-spacing: 0;
+  transition: background 0.15s, color 0.15s;
+}
+
+main .form.securbank .nps-btn:last-child {
+  border-right: 1px solid #d1d5db;
+}
+
+main .form.securbank .nps-btn:hover:not(:disabled) {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+main .form.securbank .nps-btn.zone-low.selected {
+  background: #ef4444;
+  color: #fff;
+  border-color: #ef4444;
+}
+
+main .form.securbank .nps-btn.zone-mid.selected {
+  background: #f59e0b;
+  color: #fff;
+  border-color: #f59e0b;
+}
+
+main .form.securbank .nps-btn.zone-high.selected {
+  background: #22c55e;
+  color: #fff;
+  border-color: #22c55e;
+}
+
 main .form.securbank .button-wrapper button:hover {
   border: 2px solid #0f766e;
   color: #0f766e;
@@ -231,7 +271,47 @@ main .form.securbank .wizard-button-wrapper {
 }
 
 /* ------------------------------------------------------------------
-   11. RESPONSIVE
+   11. READ-ONLY MODE
+   form.js sets `input.readOnly = true` on the input — no data-readonly
+   attribute is ever placed on the wrapper.  Use input[readonly] directly
+   for the input chrome, and :has() to reach the sibling label.
+   ------------------------------------------------------------------ */
+
+/* Muted caption label — .field-wrapper that contains a readonly input */
+main .form.securbank .field-wrapper:has(input[readonly]) > label,
+main .form.securbank .field-wrapper:has(textarea[readonly]) > label {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: #9ca3af;
+  letter-spacing: 0;
+}
+
+/* Strip all input chrome; render value as bold display text */
+main .form.securbank input[readonly],
+main .form.securbank textarea[readonly] {
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+  height: auto;
+  margin-top: 4px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #111827;
+  pointer-events: none;
+  cursor: default;
+}
+
+/* Suppress focus ring on readonly inputs */
+main .form.securbank input[readonly]:focus,
+main .form.securbank textarea[readonly]:focus {
+  outline: none;
+  border: none;
+  box-shadow: none;
+}
+
+/* ------------------------------------------------------------------
+   12. RESPONSIVE
    ------------------------------------------------------------------ */
 @media (width <= 599px) {
   main .form.securbank form {

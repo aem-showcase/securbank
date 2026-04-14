@@ -30,12 +30,64 @@
           "...": "../../models/form-common/_basic-input-fields.json#/fields"
         },
         {
+          "component": "select",
+          "name": "variant",
+          "label": "Variant",
+          "valueType": "string",
+          "value": "default",
+          "options": [
+            { "name": "Stars", "value": "default" },
+            { "name": "NPS (0–10)", "value": "nps" }
+          ]
+        },
+        {
+          "component": "number",
+          "name": "maximum",
+          "label": "Max Score",
+          "valueType": "number",
+          "description": "Number of stars (default 5) or highest NPS score (default 10)"
+        },
+        {
+          "component": "text",
+          "name": "npsLabelLow",
+          "label": "Low Label",
+          "valueType": "string",
+          "value": "Not likely",
+          "condition": { "===": [{ "var": "variant" }, "nps"] }
+        },
+        {
+          "component": "text",
+          "name": "npsLabelMid",
+          "label": "Mid Label",
+          "valueType": "string",
+          "value": "May be",
+          "condition": { "===": [{ "var": "variant" }, "nps"] }
+        },
+        {
+          "component": "text",
+          "name": "npsLabelHigh",
+          "label": "High Label",
+          "valueType": "string",
+          "value": "Very likely",
+          "condition": { "===": [{ "var": "variant" }, "nps"] }
+        },
+        {
           "component": "tab",
           "label": "Validation",
           "name": "validation"
         },
         {
-          "...": "../../models/form-common/_number-validation-fields.json#/fields"
+          "component": "boolean",
+          "name": "required",
+          "label": "Required",
+          "valueType": "boolean"
+        },
+        {
+          "component": "text",
+          "name": "mandatoryMessage",
+          "label": "Error message",
+          "valueType": "string",
+          "description": "Error message shown when required field is left empty."
         },
         {
           "...": "../../models/form-common/_help-container.json#/fields"

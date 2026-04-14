@@ -1,3 +1,106 @@
+/**
+ * Decorates a number-input field as an NPS-style rating widget.
+ *
+ * Max is read from the input's `max` attribute (set via the Validation tab's
+ * "Maximum" field), defaulting to 10.  Zone thresholds scale proportionally:
+ *   0 – round(max × 0.6) → detractors  (red,    low label)
+ *   …  – round(max × 0.8) → passives    (orange, mid label)
+ *   …  – max              → promoters   (green,  high label)
+ * For max=10 this gives the standard NPS split: 0–6 / 7–8 / 9–10.
+ *
+ * @param {HTMLElement} fieldDiv  - the field wrapper element
+ * @param {Object}      fieldJson - the field model from the form definition
+ */
+function decorateNPS(fieldDiv, fieldJson) {
+  // displayFormat causes form.js to change input type to "text", so fall back
+  // to any input if the number input is not found.
+  const input = fieldDiv.querySelector('input[type="number"]') || fieldDiv.querySelector('input');
+  const enabled = fieldJson?.enabled !== false;
+  const readOnly = fieldJson?.readOnly === true;
+  const props = fieldJson?.properties || {};
+  const labelLow = props.npsLabelLow || 'Not likely';
+  const labelMid = props.npsLabelMid || 'May be';
+  const labelHigh = props.npsLabelHigh || 'Very likely';
+
+  // Reuse the existing maximum validation field — no separate authoring knob needed.
+  const max = parseInt(input?.getAttribute('max'), 10) || 10;
+  const lowEnd = Math.round(max * 0.6); // last value in the low (red) zone
+  const midEnd = Math.round(max * 0.8); // last value in the mid (orange) zone
+
+  input.style.display = 'none';
+
+  const npsDiv = document.createElement('div');
+  npsDiv.className = 'nps-rating';
+  if (!enabled || readOnly) npsDiv.classList.add('disabled');
+
+  // ── Number buttons row (0 – max) ────────────────────────────────
+  const numberRow = document.createElement('div');
+  numberRow.className = 'nps-number-row';
+  numberRow.style.gridTemplateColumns = `repeat(${max + 1}, 1fr)`;
+
+  for (let i = 0; i <= max; i += 1) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'nps-btn';
+    // eslint-disable-next-line no-nested-ternary
+    btn.classList.add(i <= lowEnd ? 'zone-low' : i <= midEnd ? 'zone-mid' : 'zone-high');
+    btn.textContent = i;
+
+    if (!enabled || readOnly) {
+      btn.disabled = true;
+    } else {
+      btn.addEventListener('click', () => {
+        numberRow.querySelectorAll('.nps-btn').forEach((b) => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        input.value = i;
+        input.dispatchEvent(new Event('change', { bubbles: true }));
+      });
+    }
+    numberRow.append(btn);
+  }
+
+  // ── Coloured zone bar ────────────────────────────────────────────
+  // flex values match the button count in each zone so bar segments align
+  // exactly with the button boundaries.
+  const lowCount = lowEnd + 1;
+  const midCount = midEnd - lowEnd;
+  const highCount = max - midEnd;
+
+  const zoneBar = document.createElement('div');
+  zoneBar.className = 'nps-zone-bar';
+  [
+    { cls: 'zone-low', flex: lowCount },
+    { cls: 'zone-mid', flex: midCount },
+    { cls: 'zone-high', flex: highCount },
+  ].forEach(({ cls, flex }) => {
+    const seg = document.createElement('div');
+    seg.className = `nps-zone-seg ${cls}`;
+    seg.style.flex = flex;
+    zoneBar.append(seg);
+  });
+
+  // ── Labels row ───────────────────────────────────────────────────
+  // Each label span gets the same flex value as its zone bar segment so the
+  // text aligns with the coloured zone regardless of max.
+  const labelsRow = document.createElement('div');
+  labelsRow.className = 'nps-labels-row';
+  [
+    { cls: 'zone-low', text: labelLow, flex: lowCount },
+    { cls: 'zone-mid', text: labelMid, flex: midCount },
+    { cls: 'zone-high', text: labelHigh, flex: highCount },
+  ].forEach(({ cls, text, flex }) => {
+    const lbl = document.createElement('span');
+    lbl.className = `nps-label ${cls}`;
+    lbl.style.flex = flex;
+    lbl.textContent = text;
+    labelsRow.append(lbl);
+  });
+
+  npsDiv.append(numberRow, zoneBar, labelsRow);
+  fieldDiv.append(npsDiv);
+  return fieldDiv;
+}
+
 // create a function to create a rating component
 // the function will take a fieldDiv that contains a input type number element
 // the function will convert the input element to a rating component
@@ -16,6 +119,10 @@
 // when a star element is hovered, a css hover class will be added to the star
 // elements till the index of the hovered star element
 export default function decorate(fieldDiv, fieldJson) {
+  if (fieldJson?.properties?.variant === 'nps') {
+    return decorateNPS(fieldDiv, fieldJson);
+  }
+
   // get the input element from the fieldDiv
   const input = fieldDiv.querySelector('input[type="number"]');
   const enabled = fieldJson?.enabled;

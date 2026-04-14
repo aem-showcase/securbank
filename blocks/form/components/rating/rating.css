@@ -1,4 +1,4 @@
-/** rating.css **/
+/** rating.css — star rating + NPS variant **/
 main .form .rating {
     display: flex;
     gap: 5px;
@@ -24,3 +24,88 @@ main .form .rating:hover .star.hover {
 main .form .rating.disabled .star:not(.selected) {
     color: #ccc;
 }
+
+/* ─── NPS variant ─────────────────────────────────────────────────── */
+
+main .form .nps-rating {
+    width: 100%;
+}
+
+/* Equal-width buttons in a single row.
+   Column count is set inline by JS to match (max + 1). */
+main .form .nps-number-row {
+    display: grid;
+}
+
+main .form .nps-btn {
+    padding: 10px 4px;
+    background: #fff;
+    border: 1px solid #d1d5db;
+    border-right: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #374151;
+    cursor: pointer;
+    text-align: center;
+    transition: background 0.15s, color 0.15s;
+    line-height: 1;
+}
+
+main .form .nps-btn:last-child {
+    border-right: 1px solid #d1d5db;
+}
+
+main .form .nps-btn:hover:not(:disabled) {
+    background: #f3f4f6;
+}
+
+/* Selected state — background matches the button's zone */
+main .form .nps-btn.zone-low.selected {
+    background: #ef4444;
+    color: #fff;
+    border-color: #ef4444;
+}
+
+main .form .nps-btn.zone-mid.selected {
+    background: #f59e0b;
+    color: #fff;
+    border-color: #f59e0b;
+}
+
+main .form .nps-btn.zone-high.selected {
+    background: #22c55e;
+    color: #fff;
+    border-color: #22c55e;
+}
+
+/* Disabled state */
+main .form .nps-rating.disabled .nps-btn {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+/* Zone colour bar — proportional segments via flex set in JS */
+main .form .nps-zone-bar {
+    display: flex;
+    height: 5px;
+    margin-top: 6px;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+main .form .nps-zone-seg.zone-low  { background: #ef4444; }
+main .form .nps-zone-seg.zone-mid  { background: #f59e0b; }
+main .form .nps-zone-seg.zone-high { background: #22c55e; }
+
+/* Labels: aligned to their zone proportions (7 / 2 / 2) */
+main .form .nps-labels-row {
+    display: flex;
+    margin-top: 6px;
+    font-size: 0.75rem;
+    color: #6b7280;
+}
+
+/* flex is set inline by JS to match the zone button count */
+main .form .nps-label.zone-low  { text-align: left; }
+main .form .nps-label.zone-mid  { text-align: center; }
+main .form .nps-label.zone-high { text-align: right; }

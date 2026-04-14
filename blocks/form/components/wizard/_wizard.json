@@ -41,6 +41,11 @@
           "...": "../../models/form-common/_basic-input-fields.json#/fields"
         },
         {
+          "component": "tab",
+          "label": "Navigation",
+          "name": "navigation"
+        },
+        {
           "component": "select",
           "name": "variant",
           "label": "Variant",

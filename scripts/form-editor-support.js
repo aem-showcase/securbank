@@ -25,7 +25,7 @@ import { createButton as createRepeatButton } from '../blocks/form/components/re
 window.currentMode = 'preview';
 let activeWizardStep;
 let activeAccordionPanel;
-const OOTBViewTypeComponentsWithoutModel = ['wizard', 'toggleable-link', 'modal'];
+const OOTBViewTypeComponentsWithoutModel = ['toggleable-link', 'modal'];
 
 export function getItems(container) {
   if (container[':itemsOrder'] && container[':items']) {
@@ -88,6 +88,10 @@ function annotateFormFragment(fragmentFieldWrapper, fragmentDefinition) {
 }
 
 function getPropertyModel(fd) {
+  const viewType = fd['fd:viewType'] || fd.properties?.['fd:viewType'];
+  if (viewType && !OOTBViewTypeComponentsWithoutModel.includes(viewType)) {
+    return viewType;
+  }
   if (!fd[':type'] || fd[':type'].startsWith('core/fd/components') || OOTBViewTypeComponentsWithoutModel.includes(fd[':type'])) {
     return fd.fieldType === 'image' || fd.fieldType === 'button' ? `form-${fd.fieldType}` : fd.fieldType;
   }

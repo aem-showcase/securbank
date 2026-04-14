@@ -4147,25 +4147,21 @@
         ]
       },
       {
-        "fields": [
-          {
-            "component": "tab",
-            "label": "Help Content",
-            "name": "help"
-          },
-          {
-            "component": "richtext",
-            "name": "description",
-            "label": "Help text",
-            "valueType": "string"
-          },
-          {
-            "component": "richtext",
-            "name": "tooltip",
-            "label": "Short description",
-            "valueType": "string"
-          }
-        ]
+        "component": "tab",
+        "label": "Help Content",
+        "name": "help"
+      },
+      {
+        "component": "richtext",
+        "name": "description",
+        "label": "Help text",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "tooltip",
+        "label": "Short description",
+        "valueType": "string"
       },
       {
         "component": "container",

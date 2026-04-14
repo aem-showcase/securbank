@@ -38,7 +38,7 @@ function applyCardContent(element, enums) {
       label = document.createElement('label');
       label.textContent = enumItem.title;
       if (input) label.setAttribute('for', input.id);
-      input ? input.after(label) : radioWrapper.prepend(label);
+      if (input) { input.after(label); } else { radioWrapper.prepend(label); }
     }
 
     const desc = document.createElement('p');

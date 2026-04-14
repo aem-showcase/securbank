@@ -17,6 +17,7 @@
  * Adobe permits you to use and modify this file solely in accordance with
  * the terms of the Adobe license agreement accompanying it.
  ************************************************************************ */
+/* global turnstile, grecaptcha */
 import { getSubmitBaseUrl } from '../constant.js';
 /**
  * Prefixes the URL with the context path.
@@ -64,8 +65,10 @@ function toObject(str) {
 
 /**
  * Navigates to the specified URL.
- * @param {string} destinationURL - The URL to navigate to. If not specified, a new blank window will be opened.
- * @param {string} destinationType - The type of destination. Supports the following values: "_newwindow", "_blank", "_parent", "_self", "_top", or the name of the window.
+ * @param {string} destinationURL - The URL to navigate to. If not specified,
+ *   a new blank window will be opened.
+ * @param {string} destinationType - The type of destination. Supports the following values:
+ *   "_newwindow", "_blank", "_parent", "_self", "_top", or the name of the window.
  * @returns {Window} - The newly opened window.
  */
 function navigateTo(destinationURL, destinationType) {
@@ -77,6 +80,7 @@ function navigateTo(destinationURL, destinationType) {
       param = '_blank';
       arg = 'width=1000,height=800';
       break;
+    // no default
   }
   if (!param) {
     if (destinationType) {
@@ -94,17 +98,20 @@ function navigateTo(destinationURL, destinationType) {
  * Default error handler for the invoke service API.
  * @param {object} response - The response body of the invoke service API.
  * @param {object} headers - The response headers of the invoke service API.
- * @param {scope} globals - An object containing read-only form instance, read-only target field instance and methods for form modifications.
+ * @param {scope} globals - An object containing read-only form instance, read-only target field
+ *   instance and methods for form modifications.
  * @returns {void}
  */
 function defaultErrorHandler(response, headers, globals) {
   if (response && response.validationErrors) {
     response.validationErrors?.forEach((violation) => {
       if (violation.details) {
+        const details = violation.details.join('\n');
         if (violation.fieldName) {
-          globals.functions.markFieldAsInvalid(violation.fieldName, violation.details.join('\n'), { useQualifiedName: true });
+          // eslint-disable-next-line max-len
+          globals.functions.markFieldAsInvalid(violation.fieldName, details, { useQualifiedName: true });
         } else if (violation.dataRef) {
-          globals.functions.markFieldAsInvalid(violation.dataRef, violation.details.join('\n'), { useDataRef: true });
+          globals.functions.markFieldAsInvalid(violation.dataRef, details, { useDataRef: true });
         }
       }
     });
@@ -114,7 +121,8 @@ function defaultErrorHandler(response, headers, globals) {
 /**
  * Handles the success response after a form submission.
  *
- * @param {scope} globals - An object containing read-only form instance, read-only target field instance and methods for form modifications.
+ * @param {scope} globals - An object containing read-only form instance, read-only target field
+ *   instance and methods for form modifications.
  * @returns {void}
  */
 function defaultSubmitSuccessHandler(globals) {
@@ -141,11 +149,14 @@ function defaultSubmitSuccessHandler(globals) {
  * Handles the error response after a form submission.
  *
  * @param {string} defaultSubmitErrorMessage - The default error message.
- * @param {scope} globals - An object containing read-only form instance, read-only target field instance and methods for form modifications.
+ * @param {scope} globals - An object containing read-only form instance, read-only target field
+ *   instance and methods for form modifications.
  * @returns {void}
  */
+// eslint-disable-next-line no-unused-vars
 function defaultSubmitErrorHandler(defaultSubmitErrorMessage, globals) {
   // view layer should send localized error message here
+  // eslint-disable-next-line no-alert
   window.alert(defaultSubmitErrorMessage);
 }
 
@@ -155,38 +166,40 @@ function defaultSubmitErrorHandler(defaultSubmitErrorMessage, globals) {
  * This function uses the Google reCAPTCHA Enterprise/turnstile service to fetch the captcha token.
  *
  * @async
- * @param {object} globals - An object containing read-only form instance, read-only target field instance and methods for form modifications.
+ * @param {object} globals - An object containing read-only form instance, read-only target field
+ *   instance and methods for form modifications.
  * @returns {string} - The captcha token.
  */
 async function fetchCaptchaToken(globals) {
   return new Promise((resolve, reject) => {
     // successCallback and errorCallback can be reused for different captcha implementations
-    const successCallback = function (token) {
+    const successCallback = function successCallback(token) {
       resolve(token);
     };
 
-    const errorCallback = function (error) {
+    const errorCallback = function errorCallback(error) {
       reject(error);
     };
 
     try {
       const captcha = globals.form.$captcha;
       if (captcha.$captchaProvider === 'turnstile') {
-        const turnstileContainer = document.getElementsByClassName('cmp-adaptiveform-turnstile__widget')[0];
+        const turnstileContainer = document
+          .getElementsByClassName('cmp-adaptiveform-turnstile__widget')[0];
         const turnstileParameters = {
           sitekey: captcha.$captchaSiteKey,
           callback: successCallback,
           'error-callback': errorCallback,
         };
-        if (turnstile != undefined) {
+        if (turnstile !== undefined) {
           const widgetId = turnstile.render(turnstileContainer, turnstileParameters);
           if (widgetId) {
             turnstile.execute(widgetId);
           } else {
-            reject({ error: 'Failed to render turnstile captcha' });
+            reject(new Error('Failed to render turnstile captcha'));
           }
         } else {
-          reject({ error: 'Turnstile captcha not loaded' });
+          reject(new Error('Turnstile captcha not loaded'));
         }
       } else {
         const siteKey = captcha?.$properties['fd:captcha']?.config?.siteKey;
@@ -215,13 +228,15 @@ async function fetchCaptchaToken(globals) {
  * Converts a date to the number of days since the Unix epoch (1970-01-01).
  *
  * If the input date is a number, it is assumed to represent the number of days since the epoch,
- * including both integer and decimal parts. In this case, only the integer part is returned as the number of days.
+ * including both integer and decimal parts. In this case, only the integer part is returned
+ * as the number of days.
  *
  * @param {string|Date|number} date - The date to convert.
  * Can be:
  * - An ISO string (yyyy-mm-dd)
  * - A Date object
- * - A number representing the days since the epoch, where the integer part is the number of days and the decimal part is the fraction of the day
+ * - A number representing the days since the epoch, where the integer part is the number of
+ *   days and the decimal part is the fraction of the day
  *
  * @returns {number} - The number of days since the Unix epoch
  */
@@ -238,7 +253,7 @@ function dateToDaysSinceEpoch(date) {
   }
 
   // Validate that date is valid after parsing
-  if (isNaN(dateObj.getTime())) {
+  if (Number.isNaN(dateObj.getTime())) {
     throw new Error('Invalid date input');
   }
   return Math.floor(dateObj.getTime() / (1000 * 60 * 60 * 24));

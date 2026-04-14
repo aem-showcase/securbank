@@ -3,6 +3,7 @@ import { createButton } from '../../util.js';
 export class WizardLayout {
   inputFields = 'input,textarea,select';
 
+  // eslint-disable-next-line max-len, max-params
   constructor(includePrevBtn = true, includeNextBtn = true, prevLabel = 'Back', nextLabel = 'Next') {
     this.includePrevBtn = includePrevBtn;
     this.includeNextBtn = includeNextBtn;
@@ -71,7 +72,7 @@ export class WizardLayout {
       current.classList.remove('current-wizard-step');
       navigateTo.classList.add('current-wizard-step');
       // add/remove active class from menu item
-      const navigateToMenuItem = panel.querySelector(`li[data-index="${navigateTo.dataset.index}"]`);
+      const navigateToMenuItem = panel.querySelector(`li[data-index="${navigateTo.dataset.index}"]`); // eslint-disable-line max-len
       currentMenuItem.classList.remove('wizard-menu-active-item');
       currentMenuItem.removeAttribute('aria-current');
       navigateToMenuItem.classList.add('wizard-menu-active-item');
@@ -102,8 +103,8 @@ export class WizardLayout {
         const activePanel = panel.querySelector(`#${target?.id}`);
         activePanel?.classList.add('current-wizard-step');
         // for active menu item
-        panel.querySelector('.wizard-menu-active-item')?.classList.remove('wizard-menu-active-item');
-        menuItems.querySelector(`[data-index="${activePanel.dataset.index}"]`)?.classList.add('wizard-menu-active-item');
+        panel.querySelector('.wizard-menu-active-item')?.classList.remove('wizard-menu-active-item'); // eslint-disable-line max-len
+        menuItems.querySelector(`[data-index="${activePanel.dataset.index}"]`)?.classList.add('wizard-menu-active-item'); // eslint-disable-line max-len
         target.querySelector('[data-active="true"]')?.focus();
       }
     });
@@ -162,13 +163,13 @@ export class WizardLayout {
     wrapper.className = 'wizard-button-wrapper';
     if (this.includePrevBtn && children.length) {
       this.addButton(wrapper, panel, {
-        label: { value: this.prevLabel }, fieldType: 'button', name: 'back', id: 'wizard-button-prev',
+        label: { value: this.prevLabel }, fieldType: 'button', name: 'back', id: 'wizard-button-prev', // eslint-disable-line max-len
       }, false);
     }
 
     if (this.includeNextBtn && children.length) {
       this.addButton(wrapper, panel, {
-        label: { value: this.nextLabel }, fieldType: 'button', name: 'next', id: 'wizard-button-next',
+        label: { value: this.nextLabel }, fieldType: 'button', name: 'next', id: 'wizard-button-next', // eslint-disable-line max-len
       });
     }
 

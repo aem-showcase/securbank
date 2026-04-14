@@ -120,8 +120,34 @@
           {
             "name": "Columns",
             "value": "columns"
+          },
+          {
+            "name": "Split",
+            "value": "split"
+          },
+          {
+            "name": "Overlap",
+            "value": "overlap"
           }
         ]
+      },
+      {
+        "component": "number",
+        "name": "splitLeft",
+        "label": "Split Left",
+        "description": "Left column width as a percentage (1–99). Default: 70",
+        "valueType": "number",
+        "value": 70,
+        "minimum": 1,
+        "maximum": 99,
+        "condition": {
+          "in": [
+            "split",
+            {
+              "var": "style"
+            }
+          ]
+        }
       }
     ]
   },
@@ -292,6 +318,22 @@
             "name": "style",
             "label": "Form Specific styles path",
             "valueType": "string"
+          },
+          {
+            "component": "multiselect",
+            "name": "theme",
+            "label": "Theme",
+            "valueType": "string",
+            "options": [
+              {
+                "name": "Default",
+                "value": ""
+              },
+              {
+                "name": "SecureBank",
+                "value": "securbank"
+              }
+            ]
           }
         ]
       }

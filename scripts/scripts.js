@@ -132,6 +132,14 @@ export function decorateMain(main) {
   buildAutoBlocks(main);
   decorateSections(main);
   decorateBlocks(main);
+  // Apply authored split ratio to .section.split via CSS custom property.
+  // splitLeft comes from the section model's splitLeft field, serialised as
+  // data-split-left by decorateSections (all non-style keys → dataset).
+  main.querySelectorAll('.section.split').forEach((section) => {
+    const left = parseInt(section.dataset.splitLeft, 10) || 70;
+    section.style.setProperty('--split-left', `${left}fr`);
+    section.style.setProperty('--split-right', `${100 - left}fr`);
+  });
 }
 
 /**

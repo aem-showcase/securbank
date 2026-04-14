@@ -1,0 +1,149 @@
+/* Grid layout — auto-fits cards to available space */
+.card fieldset {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+/*
+ * Override base form.css rules that apply to all .radio-wrapper elements.
+ * Base rule: main .form form .radio-wrapper { display: flex; flex-wrap: wrap; align-items: center }
+ * → specificity (0,2,2). We use (0,3,1) below to win.
+ */
+main .form .card .radio-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex-wrap: nowrap;
+  position: relative;
+  background: #fff;
+  border-radius: 12px;
+  border: 2px solid #e5e7eb;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  padding: 16px;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  gap: 0;
+  min-width: 0;
+}
+
+main .form .card .radio-wrapper:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Selected card */
+main .form .card .radio-wrapper:has(input:checked) {
+  border-color: #0ea5e9;
+  box-shadow: 0 0 0 1px #0ea5e9, 0 4px 12px rgba(14, 165, 233, 0.15);
+}
+
+/*
+ * Override base: main .form input[type='radio'] { position: static }
+ * → specificity (0,2,2). We use (0,4,2) below to win.
+ */
+main .form .card .radio-wrapper input[type="radio"] {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #0ea5e9;
+  margin: 0;
+}
+
+/*
+ * Override base: main .form .radio-wrapper label { flex-basis: calc(100% - 24px) }
+ * → specificity (0,2,2). We use (0,3,2) below to win.
+ */
+main .form .card .radio-wrapper label {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #111827;
+  padding-right: 28px;
+  cursor: pointer;
+  line-height: 1.3;
+  flex-basis: auto;
+}
+
+/* Description */
+.card .radio-wrapper .card-choice-desc {
+  font-size: 0.7rem;
+  color: #6b7280;
+  margin: 2px 0 8px;
+  line-height: 1.4;
+}
+
+/* Card image */
+.card .radio-wrapper .card-choice-image {
+  width: 100%;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  overflow: hidden;
+  display: block;
+}
+
+.card .radio-wrapper .card-choice-image img {
+  width: 100%;
+  height: auto;
+  max-height: 180px;
+  object-fit: contain;
+  display: block;
+  border-radius: 8px;
+}
+
+/* Features list */
+.card .radio-wrapper .card-choice-benefits-list {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.card .radio-wrapper .card-choice-benefits-list li {
+  font-size: 0.78rem;
+  color: #374151;
+  padding-left: 30px;
+  position: relative;
+  line-height: 1.4;
+}
+
+/* Shared icon base — outlined rounded square, no fill, larger icon */
+.card .radio-wrapper .card-choice-benefits-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  background: transparent no-repeat center;
+  background-size: 16px 16px;
+  border: 1px solid #d1d5db;
+}
+
+/* 1st feature — coin/rewards icon */
+.card .radio-wrapper .card-choice-benefits-list li:nth-child(1)::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%236b7280' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='8' cy='8' r='6'/%3E%3Cpath d='M6.5 10.5V5.5h2a1.5 1.5 0 010 3H6.5'/%3E%3C/svg%3E");
+}
+
+/* 2nd feature — dollar/spend icon */
+.card .radio-wrapper .card-choice-benefits-list li:nth-child(2)::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%236b7280' stroke-width='1.5' stroke-linecap='round'%3E%3Cpath d='M8 2v12'/%3E%3Cpath d='M10.5 5H6.75a1.75 1.75 0 000 3.5h2.5a1.75 1.75 0 010 3.5H5.5'/%3E%3C/svg%3E");
+}
+
+/* 3rd feature — credit card/fees icon */
+.card .radio-wrapper .card-choice-benefits-list li:nth-child(3)::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%236b7280' stroke-width='1.5' stroke-linecap='round'%3E%3Crect x='1.5' y='4' width='13' height='9' rx='1.5'/%3E%3Cpath d='M1.5 7h13'/%3E%3C/svg%3E");
+}
+
+/* Fallback for 4th+ features */
+.card .radio-wrapper .card-choice-benefits-list li:nth-child(n+4)::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%236b7280' stroke-width='1.5' stroke-linecap='round'%3E%3Ccircle cx='8' cy='8' r='3'/%3E%3C/svg%3E");
+}

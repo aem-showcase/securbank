@@ -35,6 +35,9 @@
     },
     { 
       "...": "./components/wizard/_wizard.json#/definitions" 
+    },
+    {
+      "...": "./components/card-choice/_card-choice.json#/definitions"
     }
   ],
   "models": [
@@ -93,7 +96,8 @@
         "text-input",
         "tnc",
         "wizard",
-        "range"
+        "range",
+        "card-choice" 
       ]
     }
   ]

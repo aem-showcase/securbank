@@ -1,0 +1,16 @@
+.card .radio-wrapper {
+    min-width: 320px; /* or whatever width fits your design */
+    max-width: 340px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+    padding: 24px 16px;
+    margin-bottom: 0;
+    position: relative;
+    transition: box-shadow 0.2s;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}

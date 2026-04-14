@@ -3,9 +3,12 @@ import { createButton } from '../../util.js';
 export class WizardLayout {
   inputFields = 'input,textarea,select';
 
-  constructor(includePrevBtn = true, includeNextBtn = true) {
+  // eslint-disable-next-line max-len, max-params
+  constructor(includePrevBtn = true, includeNextBtn = true, prevLabel = 'Back', nextLabel = 'Next') {
     this.includePrevBtn = includePrevBtn;
     this.includeNextBtn = includeNextBtn;
+    this.prevLabel = prevLabel;
+    this.nextLabel = nextLabel;
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -41,7 +44,11 @@ export class WizardLayout {
   validateContainer(container) {
     const fieldElements = [...container.querySelectorAll(this.inputFields)];
     const isValid = fieldElements.reduce((valid, fieldElement) => {
-      const isFieldValid = fieldElement.checkValidity();
+      const isHidden = fieldElement.closest('.field-wrapper')?.dataset?.visible === 'false';
+      let isFieldValid = true;
+      if (!isHidden) {
+        isFieldValid = fieldElement.checkValidity();
+      }
       return valid && isFieldValid;
     }, true);
 
@@ -65,9 +72,11 @@ export class WizardLayout {
       current.classList.remove('current-wizard-step');
       navigateTo.classList.add('current-wizard-step');
       // add/remove active class from menu item
-      const navigateToMenuItem = panel.querySelector(`li[data-index="${navigateTo.dataset.index}"]`);
+      const navigateToMenuItem = panel.querySelector(`li[data-index="${navigateTo.dataset.index}"]`); // eslint-disable-line max-len
       currentMenuItem.classList.remove('wizard-menu-active-item');
+      currentMenuItem.removeAttribute('aria-current');
       navigateToMenuItem.classList.add('wizard-menu-active-item');
+      navigateToMenuItem.setAttribute('aria-current', 'true');
       const event = new CustomEvent('wizard:navigate', {
         detail: {
           prevStep: { id: current.id, index: +current.dataset.index },
@@ -94,8 +103,8 @@ export class WizardLayout {
         const activePanel = panel.querySelector(`#${target?.id}`);
         activePanel?.classList.add('current-wizard-step');
         // for active menu item
-        panel.querySelector('.wizard-menu-active-item')?.classList.remove('wizard-menu-active-item');
-        menuItems.querySelector(`[data-index="${activePanel.dataset.index}"]`)?.classList.add('wizard-menu-active-item');
+        panel.querySelector('.wizard-menu-active-item')?.classList.remove('wizard-menu-active-item'); // eslint-disable-line max-len
+        menuItems.querySelector(`[data-index="${activePanel.dataset.index}"]`)?.classList.add('wizard-menu-active-item'); // eslint-disable-line max-len
         target.querySelector('[data-active="true"]')?.focus();
       }
     });
@@ -144,6 +153,7 @@ export class WizardLayout {
       // create wizard menu
       const wizardMenu = WizardLayout.createMenu(Array.from(children));
       wizardMenu.querySelector('li').classList.add('wizard-menu-active-item');
+      wizardMenu.querySelector('li').setAttribute('aria-current', 'true');
       // Insert the menu before the first child of the wizard
       panel.insertBefore(wizardMenu, children[0]);
       WizardLayout.attachMutationObserver(panel);
@@ -153,25 +163,16 @@ export class WizardLayout {
     wrapper.className = 'wizard-button-wrapper';
     if (this.includePrevBtn && children.length) {
       this.addButton(wrapper, panel, {
-        label: { value: 'Back' }, fieldType: 'button', name: 'back', id: 'wizard-button-prev',
+        label: { value: this.prevLabel }, fieldType: 'button', name: 'back', id: 'wizard-button-prev', // eslint-disable-line max-len
       }, false);
     }
 
     if (this.includeNextBtn && children.length) {
       this.addButton(wrapper, panel, {
-        label: { value: 'Next' }, fieldType: 'button', name: 'next', id: 'wizard-button-next',
+        label: { value: this.nextLabel }, fieldType: 'button', name: 'next', id: 'wizard-button-next', // eslint-disable-line max-len
       });
     }
 
-    const resetBtn = panel.querySelector('.reset-wrapper');
-    if (resetBtn) {
-      wrapper.append(resetBtn);
-    }
-
-    const submitBtn = panel.querySelector('.submit-wrapper');
-    if (submitBtn) {
-      wrapper.append(submitBtn);
-    }
     this.assignIndexToSteps(panel);
     panel.append(wrapper);
     panel.querySelector('fieldset')?.classList.add('current-wizard-step');
@@ -183,7 +184,16 @@ export class WizardLayout {
 const layout = new WizardLayout();
 
 export default function wizardLayout(panel) {
-  layout.applyLayout(panel);
+  const isContinueOnly = panel.dataset.variant === 'continueOnly';
+  const instance = new WizardLayout(
+    !isContinueOnly,
+    true,
+    panel.dataset.prevButtonLabel || 'Back',
+    isContinueOnly
+      ? (panel.dataset.continueButtonLabel || 'Continue')
+      : (panel.dataset.nextButtonLabel || 'Next'),
+  );
+  instance.applyLayout(panel);
   return panel;
 }
 

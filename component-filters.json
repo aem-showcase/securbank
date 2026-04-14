@@ -66,13 +66,16 @@
       "form-submit-button",
       "number-input",
       "panel",
+      "password",
       "plain-text",
       "radio-group",
       "rating",
       "telephone-input",
       "text-input",
       "tnc",
-      "wizard"
+      "wizard",
+      "range",
+      "card-choice"
     ]
   }
 ]

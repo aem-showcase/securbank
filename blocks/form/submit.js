@@ -1,4 +1,4 @@
-import { DEFAULT_THANK_YOU_MESSAGE, getRouting, getSubmitBaseUrl } from './constant.js';
+import { DEFAULT_THANK_YOU_MESSAGE, getSubmitBaseUrl } from './constant.js';
 
 export function submitSuccess(e, form) {
   const { payload } = e;
@@ -24,10 +24,6 @@ export function submitSuccess(e, form) {
 }
 
 export function submitFailure(e, form) {
-  if (e.payload.status === 0) { // TODO: remove this once we have a proper error handling
-    submitSuccess(e, form);
-    return;
-  }
   let errorMessage = form.querySelector('.form-message.error-message');
   if (!errorMessage) {
     errorMessage = document.createElement('div');
@@ -79,20 +75,18 @@ function constructPayload(form) {
 
 async function prepareRequest(form) {
   const { payload } = constructPayload(form);
-  const {
-    branch, site, org, tier,
-  } = getRouting();
   const headers = {
     'Content-Type': 'application/json',
-    'x-adobe-routing': `tier=${tier},bucket=${branch}--${site}--${org}`,
+    // eslint-disable-next-line comma-dangle
+    'x-adobe-form-hostname': window?.location?.hostname
   };
   const body = { data: payload };
   let url;
   let baseUrl = getSubmitBaseUrl();
-  if (!baseUrl && org && site) {
+  if (!baseUrl) {
+    // eslint-disable-next-line prefer-template
     baseUrl = 'https://forms.adobe.com/adobe/forms/af/submit/';
-    headers['x-adobe-routing'] = `tier=${tier},bucket=${branch}--${site}--${org}`;
-    url = baseUrl + btoa(form.dataset.action);
+    url = baseUrl + btoa(`${form.dataset.action}.json`);
   } else {
     url = form.dataset.action;
   }
@@ -125,6 +119,7 @@ async function submitDocBasedForm(form, captcha) {
 
 export async function handleSubmit(e, form, captcha) {
   e.preventDefault();
+
   const valid = form.checkValidity();
   if (valid) {
     e.submitter?.setAttribute('disabled', '');

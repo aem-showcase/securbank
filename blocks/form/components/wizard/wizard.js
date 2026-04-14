@@ -183,15 +183,20 @@ export class WizardLayout {
 
 const layout = new WizardLayout();
 
-export default function wizardLayout(panel) {
-  const isContinueOnly = panel.dataset.variant === 'continueOnly';
+export default function wizardLayout(panel, fd) {
+  // Authored values come through in fd.properties (non-fd: keys).
+  // panel.dataset.* is only populated for repeatable panels (createRepeatablePanel),
+  // so read fd.properties first and fall back to dataset for doc-based forms.
+  const props = fd?.properties || {};
+  const variant = props.variant || panel.dataset.variant;
+  const isContinueOnly = variant === 'continueOnly';
   const instance = new WizardLayout(
     !isContinueOnly,
     true,
-    panel.dataset.prevButtonLabel || 'Back',
+    props.prevButtonLabel || panel.dataset.prevButtonLabel || 'Back',
     isContinueOnly
-      ? (panel.dataset.continueButtonLabel || 'Continue')
-      : (panel.dataset.nextButtonLabel || 'Next'),
+      ? (props.continueButtonLabel || panel.dataset.continueButtonLabel || 'Continue')
+      : (props.nextButtonLabel || panel.dataset.nextButtonLabel || 'Next'),
   );
   instance.applyLayout(panel);
   return panel;

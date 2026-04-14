@@ -3,9 +3,11 @@ import { createButton } from '../../util.js';
 export class WizardLayout {
   inputFields = 'input,textarea,select';
 
-  constructor(includePrevBtn = true, includeNextBtn = true) {
+  constructor(includePrevBtn = true, includeNextBtn = true, prevLabel = 'Back', nextLabel = 'Next') {
     this.includePrevBtn = includePrevBtn;
     this.includeNextBtn = includeNextBtn;
+    this.prevLabel = prevLabel;
+    this.nextLabel = nextLabel;
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -160,13 +162,13 @@ export class WizardLayout {
     wrapper.className = 'wizard-button-wrapper';
     if (this.includePrevBtn && children.length) {
       this.addButton(wrapper, panel, {
-        label: { value: 'Back' }, fieldType: 'button', name: 'back', id: 'wizard-button-prev',
+        label: { value: this.prevLabel }, fieldType: 'button', name: 'back', id: 'wizard-button-prev',
       }, false);
     }
 
     if (this.includeNextBtn && children.length) {
       this.addButton(wrapper, panel, {
-        label: { value: 'Next' }, fieldType: 'button', name: 'next', id: 'wizard-button-next',
+        label: { value: this.nextLabel }, fieldType: 'button', name: 'next', id: 'wizard-button-next',
       });
     }
 
@@ -181,7 +183,16 @@ export class WizardLayout {
 const layout = new WizardLayout();
 
 export default function wizardLayout(panel) {
-  layout.applyLayout(panel);
+  const isContinueOnly = panel.dataset.variant === 'continueOnly';
+  const instance = new WizardLayout(
+    !isContinueOnly,
+    true,
+    panel.dataset.prevButtonLabel || 'Back',
+    isContinueOnly
+      ? (panel.dataset.continueButtonLabel || 'Continue')
+      : (panel.dataset.nextButtonLabel || 'Next'),
+  );
+  instance.applyLayout(panel);
   return panel;
 }
 

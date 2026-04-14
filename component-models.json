@@ -5210,6 +5210,68 @@
         ]
       },
       {
+        "component": "select",
+        "name": "variant",
+        "label": "Variant",
+        "valueType": "string",
+        "value": "default",
+        "options": [
+          {
+            "name": "Default (Back + Next)",
+            "value": "default"
+          },
+          {
+            "name": "Continue Only",
+            "value": "continueOnly"
+          }
+        ]
+      },
+      {
+        "component": "text",
+        "name": "prevButtonLabel",
+        "label": "Back Button Label",
+        "valueType": "string",
+        "value": "Back",
+        "condition": {
+          "!==": [
+            {
+              "var": "variant"
+            },
+            "continueOnly"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "nextButtonLabel",
+        "label": "Next Button Label",
+        "valueType": "string",
+        "value": "Next",
+        "condition": {
+          "!==": [
+            {
+              "var": "variant"
+            },
+            "continueOnly"
+          ]
+        }
+      },
+      {
+        "component": "text",
+        "name": "continueButtonLabel",
+        "label": "Continue Button Label",
+        "valueType": "string",
+        "value": "Continue",
+        "condition": {
+          "===": [
+            {
+              "var": "variant"
+            },
+            "continueOnly"
+          ]
+        }
+      },
+      {
         "component": "tab",
         "label": "Help Content",
         "name": "help"

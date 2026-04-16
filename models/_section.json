@@ -85,7 +85,8 @@
         "offer",
         "forex",
         "form",
-        "embed-adaptive-form"
+        "embed-adaptive-form",
+        "form-chatbot"
       ]
     }
   ]

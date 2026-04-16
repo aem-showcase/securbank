@@ -304,6 +304,61 @@
     ]
   },
   {
+    "id": "form-chatbot",
+    "fields": [
+      {
+        "component": "select",
+        "name": "variant",
+        "label": "Variant",
+        "valueType": "string",
+        "value": "chat",
+        "options": [
+          {
+            "name": "Full",
+            "value": "full"
+          },
+          {
+            "name": "Chat",
+            "value": "chat"
+          },
+          {
+            "name": "Standalone",
+            "value": "standalone"
+          }
+        ]
+      },
+      {
+        "component": "multifield",
+        "name": "form-url",
+        "label": "Form URLs",
+        "valueType": "string",
+        "fields": [
+          {
+            "component": "text-input",
+            "name": "url",
+            "label": "URL",
+            "valueType": "string",
+            "value": ""
+          },
+          {
+            "component": "text-input",
+            "name": "label",
+            "label": "Label",
+            "valueType": "string",
+            "value": ""
+          }
+        ]
+      },
+      {
+        "component": "checkbox",
+        "name": "use-ai",
+        "label": "Use AI",
+        "valueType": "boolean",
+        "value": true
+      }
+    ]
+  },
+  {
     "id": "form",
     "fields": [
       {

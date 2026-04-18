@@ -244,7 +244,7 @@ function decoratePanelContainer(panelDefinition, panelContainer) {
 
   const isPanelWrapper = (container) => container.classList?.contains('panel-wrapper');
 
-  const shouldAddLabel = (container, panel) => panel.label && !container.querySelector(`legend[for=${container.dataset.id}]`);
+  const shouldAddLabel = (container, panel) => panel.label && !container.querySelector('legend');
 
   if (isPanelWrapper(panelContainer)) {
     if (shouldAddLabel(panelContainer, panelDefinition)) {

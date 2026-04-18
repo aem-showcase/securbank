@@ -1,0 +1,6 @@
+/* Chatbot styles are loaded remotely by chatbot.js — no local CSS needed. */
+
+.chatbot-fab {
+    padding: 0;
+    background: #fff !important;
+}

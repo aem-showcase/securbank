@@ -277,9 +277,11 @@ main .form.securbank .wizard-button-wrapper {
    for the input chrome, and :has() to reach the sibling label.
    ------------------------------------------------------------------ */
 
-/* Muted caption label — .field-wrapper that contains a readonly input */
+/* Muted caption label — .field-wrapper that contains a readonly or disabled input */
 main .form.securbank .field-wrapper:has(input[readonly]) > label,
-main .form.securbank .field-wrapper:has(textarea[readonly]) > label {
+main .form.securbank .field-wrapper:has(textarea[readonly]) > label,
+main .form.securbank .field-wrapper:has(input[disabled]) > label,
+main .form.securbank .field-wrapper:has(textarea[disabled]) > label {
   font-size: 0.75rem;
   font-weight: 400;
   color: #9ca3af;
@@ -288,7 +290,9 @@ main .form.securbank .field-wrapper:has(textarea[readonly]) > label {
 
 /* Strip all input chrome; render value as bold display text */
 main .form.securbank input[readonly],
-main .form.securbank textarea[readonly] {
+main .form.securbank textarea[readonly],
+main .form.securbank input[disabled],
+main .form.securbank textarea[disabled] {
   border: none;
   background: transparent;
   box-shadow: none;
@@ -300,11 +304,14 @@ main .form.securbank textarea[readonly] {
   color: #111827;
   pointer-events: none;
   cursor: default;
+  opacity: 1;
 }
 
-/* Suppress focus ring on readonly inputs */
+/* Suppress focus ring on readonly/disabled inputs */
 main .form.securbank input[readonly]:focus,
-main .form.securbank textarea[readonly]:focus {
+main .form.securbank textarea[readonly]:focus,
+main .form.securbank input[disabled]:focus,
+main .form.securbank textarea[disabled]:focus {
   outline: none;
   border: none;
   box-shadow: none;

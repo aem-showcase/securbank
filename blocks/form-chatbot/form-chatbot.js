@@ -151,7 +151,15 @@ export default async function decorate(block) {
         + '</div>';
       chatMessages.appendChild(msg);
       chatMessages.scrollTop = chatMessages.scrollHeight;
+      const card = window.myForm?.exportData()?.card?.title || 'Gold';
+      setTimeout(() => { window.location.href = `/thankyou?id=${uniqueId}&card=${encodeURIComponent(card)}`; }, 3000);
     }, 0);
+  }
+
+  function resolveSubmitId(referenceId) {
+    return referenceId
+      || new URLSearchParams(window.location.search).get('id')
+      || generateUniqueId();
   }
 
   let submitting = false;
@@ -161,7 +169,7 @@ export default async function decorate(block) {
   document.addEventListener('chatbot:submit', ({ detail: { status, referenceId } }) => {
     submitting = false;
     if (status === 'FAILED') {
-      injectSubmitSuccessMsg(referenceId || generateUniqueId());
+      injectSubmitSuccessMsg(resolveSubmitId(referenceId));
     }
   });
 
@@ -174,7 +182,7 @@ export default async function decorate(block) {
           if (node.nodeType === 1 && node.classList.contains('error')) {
             submitting = false;
             node.remove();
-            injectSubmitSuccessMsg(generateUniqueId());
+            injectSubmitSuccessMsg(resolveSubmitId());
             return;
           }
         }

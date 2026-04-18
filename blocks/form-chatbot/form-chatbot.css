@@ -29,12 +29,12 @@
 
 .chatbot-card:hover {
     border-color: #93c5fd;
-    box-shadow: 0 2px 8px rgba(14, 165, 233, 0.12);
+    box-shadow: 0 2px 8px rgb(14 165 233 / 12%);
 }
 
 .chatbot-card.selected {
     border-color: #0ea5e9;
-    box-shadow: 0 0 0 1px #0ea5e9, 0 2px 8px rgba(14, 165, 233, 0.15);
+    box-shadow: 0 0 0 1px #0ea5e9, 0 2px 8px rgb(14 165 233 / 15%);
 }
 
 .chatbot-card:focus-visible {

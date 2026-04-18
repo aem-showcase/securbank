@@ -89,14 +89,7 @@ function submitToRestEndpoint(globals) {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
-  }).then((response) => {
-    if (!response.ok) return null;
-    return response.json().then((result) => {
-      if (result?.id !== undefined) {
-        globals.functions.importData({ ...data, id: result.id });
-      }
-    });
-  });
+  }).then((response) => response.json());
 }
 
 // eslint-disable-next-line import/prefer-default-export

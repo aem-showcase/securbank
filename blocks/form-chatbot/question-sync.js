@@ -1,7 +1,7 @@
 import { LOG_LEVEL } from '../form/constant.js';
-import { decodeAfState } from './util.js';
+import decodeAfState from './util.js';
 
-export function registerQuestionSync() {
+export default function registerQuestionSync() {
   document.addEventListener('chatbot:question', async ({ detail: { fields, stateToken } }) => {
     if (!window.myForm?.importData) return;
 

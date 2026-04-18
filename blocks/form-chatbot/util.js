@@ -1,6 +1,6 @@
 /* global DecompressionStream */
 
-export async function decodeAfState(stateToken) {
+export default async function decodeAfState(stateToken) {
   const b64 = stateToken.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
   const payload = JSON.parse(atob(b64));
   const compressed = Uint8Array.from(atob(payload.afStateGz), (c) => c.charCodeAt(0));

@@ -1,7 +1,7 @@
 import { readBlockConfig, loadCSS } from '../../scripts/aem.js';
-import { renderCardChoice } from './card-choice.js';
-import { registerSubmitHandler } from './submit-handler.js';
-import { registerQuestionSync } from './question-sync.js';
+import renderCardChoice from './card-choice.js';
+import registerSubmitHandler from './submit-handler.js';
+import registerQuestionSync from './question-sync.js';
 
 const PROD_SERVER = 'https://adobe-aem-forms-formfillling-service-deploy-ethos0-b43054.cloud.adobe.io';
 const DEV_SERVER = 'http://localhost:8080';
@@ -51,7 +51,9 @@ export default async function decorate(block) {
   });
 
   document.addEventListener('chatbot:render-field', (e) => {
-    const { field, container, setValue, submit } = e.detail;
+    const {
+      field, container, setValue, submit,
+    } = e.detail;
     if (!Array.isArray(field.enumObjects) || !field.enumObjects[0]?.title) return;
     e.preventDefault();
     renderCardChoice(field, container, setValue, submit);

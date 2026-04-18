@@ -43,7 +43,7 @@ function buildCard(opt, index, field, onSelect) {
   return card;
 }
 
-export function renderCardChoice(field, container, setValue, submit) {
+export default function renderCardChoice(field, container, setValue, submit) {
   const grid = document.createElement('div');
   grid.className = 'chatbot-card-grid';
 

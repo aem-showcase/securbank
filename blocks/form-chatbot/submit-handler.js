@@ -33,7 +33,7 @@ function buildSuccessMessage(uniqueId) {
   return msg;
 }
 
-export function registerSubmitHandler() {
+export default function registerSubmitHandler() {
   document.addEventListener('chatbot:before-submit', (e) => {
     e.preventDefault();
 

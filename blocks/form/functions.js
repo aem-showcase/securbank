@@ -61,6 +61,21 @@ function customSubmitSuccessHandler(globals) {
   }
 }
 
+/**
+ * Generates a unique ID using crypto.randomUUID when available, with a fallback.
+ * @returns {string} A unique identifier string.
+ */
+function generateUniqueId() {
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+    return crypto.randomUUID();
+  }
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = Math.floor(Math.random() * 16);
+    const v = c === 'x' ? r : (r % 4) + 8;
+    return v.toString(16);
+  });
+}
+
 const REST_ENDPOINT = 'https://simple-mock-api.adobe-aem-hackathon.workers.dev/api/data';
 
 /**
@@ -88,6 +103,7 @@ function submitToRestEndpoint(globals) {
 export {
   getFullName,
   days,
+  generateUniqueId,
   submitFormArrayToString,
   customSubmitSuccessHandler,
   submitToRestEndpoint,

@@ -1,0 +1,68 @@
+{
+  "definitions": [
+    {
+      "title": "Form Chatbot",
+      "id": "form-chatbot",
+      "plugins": {
+        "xwalk": {
+          "page": {
+            "resourceType": "core/franklin/components/block/v1/block",
+            "template": {
+              "name": "Form Chatbot",
+              "model": "form-chatbot",
+              "variant": "chat"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "models": [
+    {
+      "id": "form-chatbot",
+      "fields": [
+        {
+          "component": "select",
+          "name": "variant",
+          "label": "Variant",
+          "valueType": "string",
+          "value": "chat",
+          "options": [
+            { "name": "Full", "value": "full" },
+            { "name": "Chat", "value": "chat" },
+            { "name": "Standalone", "value": "standalone" }
+          ]
+        },
+        {
+          "component": "text",
+          "multi": true,
+          "name": "formNames",
+          "label": "Form Names",
+          "valueType": "string"
+        },
+        {
+          "component": "text",
+          "multi": true,
+          "name": "forms",
+          "label": "Form URLs",
+          "valueType": "string"
+        },
+        {
+          "component": "text-input",
+          "name": "title",
+          "label": "Title",
+          "valueType": "string",
+          "value": "Ask"
+        },
+        {
+          "component": "boolean",
+          "name": "useAI",
+          "label": "Use AI",
+          "valueType": "boolean",
+          "value": true
+        }
+      ]
+    }
+  ],
+  "filters": []
+}

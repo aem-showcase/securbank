@@ -42,5 +42,29 @@ function days(endDate, startDate) {
   return Math.floor(diffInMs / (1000 * 60 * 60 * 24));
 }
 
+/**
+ * Handles the success response after a form submission.
+ * @param {scope} globals - globals object with form instance and invoke method.
+ * @returns {void}
+ */
+function customSubmitSuccessHandler(globals) {
+  const { event } = globals;
+  const submitSuccessResponse = event.payload.body;
+
+  if (submitSuccessResponse) {
+    if (submitSuccessResponse.redirectUrl) {
+      window.location.href = encodeURI(submitSuccessResponse.redirectUrl);
+    } else if (submitSuccessResponse.thankYouMessage) {
+      // eslint-disable-next-line no-alert
+      alert(submitSuccessResponse.thankYouMessage);
+    }
+  }
+}
+
 // eslint-disable-next-line import/prefer-default-export
-export { getFullName, days, submitFormArrayToString };
+export {
+  getFullName,
+  days,
+  submitFormArrayToString,
+  customSubmitSuccessHandler,
+};

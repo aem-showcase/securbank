@@ -61,10 +61,33 @@ function customSubmitSuccessHandler(globals) {
   }
 }
 
+const REST_ENDPOINT = 'https://simple-mock-api.adobe-aem-hackathon.workers.dev/api/data';
+
+/**
+ * Submits form data to a REST endpoint and writes the returned id into the hidden 'id' field.
+ * @param {scope} globals - globals object with form instance and invoke method.
+ * @returns {Promise<void>}
+ */
+async function submitToRestEndpoint(globals) {
+  const data = globals.functions.exportData();
+  const response = await fetch(REST_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  if (response.ok) {
+    const result = await response.json();
+    if (result?.id !== undefined) {
+      globals.functions.importData({ ...data, id: result.id });
+    }
+  }
+}
+
 // eslint-disable-next-line import/prefer-default-export
 export {
   getFullName,
   days,
   submitFormArrayToString,
   customSubmitSuccessHandler,
+  submitToRestEndpoint,
 };

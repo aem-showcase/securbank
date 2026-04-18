@@ -1,6 +1,7 @@
 /* global DecompressionStream */
 import { readBlockConfig, loadCSS, createOptimizedPicture } from '../../scripts/aem.js';
 import { LOG_LEVEL } from '../form/constant.js';
+import { generateUniqueId } from '../form/functions.js';
 
 const PROD_SERVER = 'https://adobe-aem-forms-formfillling-service-deploy-ethos0-b43054.cloud.adobe.io';
 const DEV_SERVER = 'http://localhost:8080';
@@ -128,6 +129,67 @@ export default async function decorate(block) {
 
   const { renderChat } = await import(`${serverUrl}/chatbot/core/main.js`);
   renderChat(config);
+
+  // --- Submission failure: inject branded success message ---
+  // Covers two failure paths:
+  //   1. chatbot:submit fires with status FAILED (server-reported failure)
+  //   2. Network/API error — chatbot shows an error message without firing chatbot:submit
+
+  function injectSubmitSuccessMsg(uniqueId) {
+    setTimeout(() => {
+      const chatMessages = document.getElementById('chatMessages');
+      if (!chatMessages) return;
+      const lastBot = [...chatMessages.querySelectorAll('.message.bot')].pop();
+      if (lastBot) lastBot.remove();
+      const msg = document.createElement('div');
+      msg.className = 'message bot success';
+      msg.innerHTML = '<div class="message-avatar">AI</div>'
+        + '<div class="message-content">'
+        + '<p><strong>Application Submitted Successfully!</strong></p>'
+        + `<p>Application Reference Number <strong>${uniqueId}</strong></p>`
+        + '<p>You will receive your physical Credit Card within 7 working days.</p>'
+        + '</div>';
+      chatMessages.appendChild(msg);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      const card = window.myForm?.exportData()?.card?.title || 'Gold';
+      setTimeout(() => { window.location.href = `/thankyou?id=${uniqueId}&card=${encodeURIComponent(card)}`; }, 3000);
+    }, 0);
+  }
+
+  function resolveSubmitId(referenceId) {
+    return referenceId
+      || new URLSearchParams(window.location.search).get('id')
+      || generateUniqueId();
+  }
+
+  let submitting = false;
+
+  document.addEventListener('chatbot:before-submit', () => { submitting = true; });
+
+  document.addEventListener('chatbot:submit', ({ detail: { status, referenceId } }) => {
+    submitting = false;
+    if (status === 'FAILED') {
+      injectSubmitSuccessMsg(resolveSubmitId(referenceId));
+    }
+  });
+
+  const chatMessages = document.getElementById('chatMessages');
+  if (chatMessages) {
+    new MutationObserver((mutations) => {
+      if (!submitting) return;
+      for (const { addedNodes } of mutations) {
+        for (const node of addedNodes) {
+          if (node.nodeType === 1 && node.classList.contains('error')) {
+            submitting = false;
+            node.remove();
+            injectSubmitSuccessMsg(resolveSubmitId());
+            return;
+          }
+        }
+      }
+    }).observe(chatMessages, { childList: true });
+  }
+  // ----------------------------------------------------------
 
   document.addEventListener('chatbot:before-start', (e) => {
     e.detail.context = {

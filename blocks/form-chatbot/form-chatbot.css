@@ -125,3 +125,29 @@
 .card-choice-submit:not(:disabled):hover {
     background: #0284c7;
 }
+
+/* ── Confirm button — match SecurBank primary instead of chatbot green ── */
+.option-chip.confirm-chip {
+    background: var(--primary-light);
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.option-chip.confirm-chip:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+}
+
+.option-chip.confirm-chip.selected {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+}
+
+/* ── Success message — match standard bot bubble instead of green ── */
+.message.success .message-content {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+}

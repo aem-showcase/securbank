@@ -500,20 +500,24 @@ async function initializeRuleEngineWorker(formDef, renderHTMLForm) {
           }
         };
         if (Array.isArray(changes)) {
-          if (form && formModel) {
+          if (form) {
             await changes.reduce(
               (promise, payload) => promise.then(async () => {
                 await fieldChanged(payload, form, generateFormRendition);
-                applyFieldChangeToFormModel(formModel, payload, true);
-                notifySubscription(payload);
+                if (formModel) {
+                  applyFieldChangeToFormModel(formModel, payload, true);
+                  notifySubscription(payload);
+                }
               }),
               Promise.resolve(),
             );
           }
         } else if (changes) {
           await fieldChanged(changes, form, generateFormRendition);
-          if (formModel) applyFieldChangeToFormModel(formModel, changes, true);
-          notifySubscription(changes);
+          if (formModel) {
+            applyFieldChangeToFormModel(formModel, changes, true);
+            notifySubscription(changes);
+          }
         }
       }
 

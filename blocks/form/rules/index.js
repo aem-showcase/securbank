@@ -486,12 +486,26 @@ async function initializeRuleEngineWorker(formDef, renderHTMLForm) {
       if (e.data.name === 'applyFieldChanges') {
         const { fieldChanges: changes } = e.data.payload;
         const formModel = formModels[form?.dataset?.id];
+        const notifySubscription = (payload) => {
+          const fieldId = payload.field?.id;
+          if (!fieldId) return;
+          const subs = formSubscriptions[form.dataset?.id];
+          const sub = subs?.get(fieldId);
+          if (sub?.listenChanges) {
+            try {
+              sub.callback(sub.fieldDiv, formModel.getElement(fieldId), 'change', payload);
+            } catch (err) {
+              console.error(`Error in subscription callback for field "${fieldId}":`, err);
+            }
+          }
+        };
         if (Array.isArray(changes)) {
           if (form && formModel) {
             await changes.reduce(
               (promise, payload) => promise.then(async () => {
                 await fieldChanged(payload, form, generateFormRendition);
                 applyFieldChangeToFormModel(formModel, payload, true);
+                notifySubscription(payload);
               }),
               Promise.resolve(),
             );
@@ -499,6 +513,7 @@ async function initializeRuleEngineWorker(formDef, renderHTMLForm) {
         } else if (changes) {
           await fieldChanged(changes, form, generateFormRendition);
           if (formModel) applyFieldChangeToFormModel(formModel, changes, true);
+          notifySubscription(changes);
         }
       }
 

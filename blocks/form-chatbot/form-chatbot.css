@@ -4,3 +4,124 @@
     padding: 0;
     background: #fff !important;
 }
+
+/* ── Card-choice in chatbot ───────────────────────────────────────── */
+
+.chatbot-card-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 2px; /* prevent box-shadow clipping */
+}
+
+.chatbot-card {
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+    background: #fff;
+    transition: border-color 0.18s, box-shadow 0.18s;
+    outline: none;
+}
+
+.chatbot-card:hover {
+    border-color: #93c5fd;
+    box-shadow: 0 2px 8px rgba(14, 165, 233, 0.12);
+}
+
+.chatbot-card.selected {
+    border-color: #0ea5e9;
+    box-shadow: 0 0 0 1px #0ea5e9, 0 2px 8px rgba(14, 165, 233, 0.15);
+}
+
+.chatbot-card:focus-visible {
+    outline: 2px solid #0ea5e9;
+    outline-offset: 2px;
+}
+
+/* Card image — full width, fixed height */
+.chatbot-card-image {
+    display: block;
+    width: 100%;
+    line-height: 0;
+}
+
+.chatbot-card-image img {
+    width: 100%;
+    height: 90px;
+    object-fit: cover;
+    display: block;
+}
+
+/* Text body */
+.chatbot-card-body {
+    padding: 8px 10px 10px;
+}
+
+.chatbot-card-title {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #111827;
+    line-height: 1.3;
+}
+
+.chatbot-card-desc {
+    font-size: 0.7rem;
+    color: #6b7280;
+    margin: 4px 0 0;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Selection checkmark badge */
+.chatbot-card-check {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid #d1d5db;
+    background: #fff;
+    transition: border-color 0.18s, background 0.18s;
+    pointer-events: none;
+}
+
+.chatbot-card.selected .chatbot-card-check {
+    border-color: #0ea5e9;
+    background: #0ea5e9
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='%23fff' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='2,6 5,9 10,3'/%3E%3C/svg%3E")
+        center / 11px no-repeat;
+}
+
+/* Continue button */
+.card-choice-submit {
+    display: block;
+    width: 100%;
+    margin-top: 12px;
+    padding: 10px 16px;
+    background: #0ea5e9;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, opacity 0.2s;
+}
+
+.card-choice-submit:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+.card-choice-submit:not(:disabled):hover {
+    background: #0284c7;
+}

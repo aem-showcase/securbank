@@ -47,6 +47,7 @@ module.exports = {
       password: 20,
       tnc: 12,
       range: 19,
+      'form-chatbot': 5,
     }],
     // jcr:title, hideTitle etc. are standard AEM Forms field names that end with 'Title' but have
     // no bare base field — the xwalk orphan rule produces false positives for all form models

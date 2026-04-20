@@ -3,7 +3,7 @@ import renderCardChoice from './card-choice.js';
 import registerSubmitHandler from './submit-handler.js';
 import registerQuestionSync from './question-sync.js';
 
-const PROD_SERVER = 'https://adobe-aem-forms-formfillling-service-deploy-ethos0-b43054.cloud.adobe.io';
+const PROD_SERVER = 'https://aemformfilling.adobe.io';
 const DEV_SERVER = 'http://localhost:8080';
 
 const DEFAULT_FORMS = [

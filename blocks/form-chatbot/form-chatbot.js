@@ -8,7 +8,7 @@ const DEV_SERVER = 'http://localhost:8080';
 
 const DEFAULT_FORMS = [
   { name: 'Sign up', url: 'https://www.securbankdemo.com/accounts' },
-  { name: 'Continue Credit Card Application', url: 'https://www.securbankdemo.com/content/forms/af/securebank/credit-card' },
+  { name: 'Credit Card Application', url: 'https://main--securbank--aem-showcase.aem.page/content/forms/af/securebank/credit-card' },
 ];
 
 export default async function decorate(block) {

@@ -13,7 +13,7 @@ const DEFAULT_FORMS = [
 
 export default async function decorate(block) {
   const cfg = readBlockConfig(block);
-  const isLocal = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+  const isLocal = ['localhost', '127.0.0.1','hdfc--securbank--aem-showcase.aem.page'].includes(window.location.hostname);
   const serverUrl = cfg['server-url'] || (isLocal ? DEV_SERVER : PROD_SERVER);
 
   await loadCSS(`${serverUrl}/chatbot/chatbot.css`);
